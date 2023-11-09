@@ -4,11 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bbb35160-6daa-47a5-8c12-6f7a17f3995f" name="Changes" comment="" />
+    <list default="true" id="bbb35160-6daa-47a5-8c12-6f7a17f3995f" name="Changes" comment="开发短链接后管系统相关功能">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/mybatisx/templates.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/common/serialize/PhoneDesensitizationSerializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway/src/main/resources/application.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -28,14 +47,47 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mongo&#10;mysql" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="fileTemplates" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect" value="MySQL" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/project/src/main/resources" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.17338331" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\JAVASource\shortlink\project\src\main\resources" />
+      <recent name="D:\JAVASource\shortlink\gateway\src\main\resources" />
+    </key>
+  </component>
   <component name="RunManager">
+    <configuration name="ShortLinkAdminApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="admin" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.zj.shortlink.admin.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.zj.shortlink.admin.ShortLinkAdminApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="lua.app" factoryName="Lua Application">
       <option name="program" value="lua.exe" />
       <option name="file" value="" />
@@ -46,6 +98,11 @@
       <option name="showConsole" value="true" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.ShortLinkAdminApplication" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -55,8 +112,90 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1699417853741</updated>
-      <workItem from="1699417855141" duration="716000" />
+      <workItem from="1699417855141" duration="3209000" />
+      <workItem from="1699421106009" duration="3366000" />
+      <workItem from="1699442857103" duration="8220000" />
+      <workItem from="1699451985889" duration="1812000" />
+      <workItem from="1699515272520" duration="963000" />
     </task>
+    <task id="LOCAL-00001" summary="shortlink-all初始化，配置全局pom依赖">
+      <created>1699418804642</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1699418804642</updated>
+    </task>
+    <task id="LOCAL-00002" summary="开发短链接中心项目初始化">
+      <created>1699515643721</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1699515643721</updated>
+    </task>
+    <task id="LOCAL-00003" summary="开发短链接网关项目初始化">
+      <created>1699515659014</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1699515659014</updated>
+    </task>
+    <task id="LOCAL-00004" summary="开发短链接网关项目初始化">
+      <created>1699515695141</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1699515695146</updated>
+    </task>
+    <task id="LOCAL-00005" summary="开发短链接用户项目-yaml配置web端口及数据库">
+      <created>1699515750382</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1699515750382</updated>
+    </task>
+    <task id="LOCAL-00006" summary="开发短链接用户项目-平台错误码接口">
+      <created>1699515780637</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1699515780637</updated>
+    </task>
+    <task id="LOCAL-00007" summary="开发短链接用户项目-基础错误码定义">
+      <created>1699515810218</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1699515810218</updated>
+    </task>
+    <task id="LOCAL-00008" summary="开发短链接用户项目-用户具体错误码定义">
+      <created>1699515833832</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1699515833832</updated>
+    </task>
+    <task id="LOCAL-00009" summary="开发短链接用户项目-规约功能">
+      <created>1699515900025</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1699515900025</updated>
+    </task>
+    <task id="LOCAL-00010" summary="开发短链接后管系统相关功能">
+      <created>1699515951054</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1699515951054</updated>
+    </task>
+    <task id="LOCAL-00011" summary="开发短链接后管系统相关功能">
+      <created>1699516077708</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1699516077708</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -72,5 +211,18 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="shortlink-all初始化，配置全局pom依赖" />
+    <MESSAGE value="开发短链接中心项目初始化" />
+    <MESSAGE value="开发短链接网关项目初始化" />
+    <MESSAGE value="开发短链接用户项目-yaml配置web端口及数据库" />
+    <MESSAGE value="开发短链接用户项目-平台错误码接口" />
+    <MESSAGE value="开发短链接用户项目-基础错误码定义" />
+    <MESSAGE value="开发短链接用户项目-用户具体错误码定义" />
+    <MESSAGE value="开发短链接用户项目-规约功能" />
+    <MESSAGE value="开发短链接后管系统相关功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="开发短链接后管系统相关功能" />
   </component>
 </project>
