@@ -36,7 +36,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         log.info("公共字段自动填充[update]...");
         log.info(metaObject.toString());
         if (metaObject.hasSetter("updateTime")) {
-            this.strictUpdateFill(metaObject, "updateTime", LocalDateTime::now, LocalDateTime.class);
+            this.strictUpdateFill(metaObject, "updateTime", Date::new, Date.class);
         }
     }
 }

@@ -6,8 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.zj.shortlink.admin.common.convention.result.Result;
 import org.zj.shortlink.admin.common.convention.result.Results;
+import org.zj.shortlink.admin.dto.req.UserLoginReqDTO;
 import org.zj.shortlink.admin.dto.req.UserRegisterReqDTO;
+import org.zj.shortlink.admin.dto.req.UserUpdateReqDTO;
 import org.zj.shortlink.admin.dto.resp.UserActualRespDTO;
+import org.zj.shortlink.admin.dto.resp.UserLoginRespDTO;
 import org.zj.shortlink.admin.dto.resp.UserRespDTO;
 import org.zj.shortlink.admin.service.UserService;
 
@@ -58,10 +61,38 @@ public class UserController {
      * @param requestParam 用户提交信息
      * @return 无返回值
      */
-    @PostMapping("/v1/user/register")
+    @PostMapping("/v1/user")
     public Result<Void> register(@RequestBody UserRegisterReqDTO requestParam) {
         log.warn("用户名：{}", requestParam.getUsername());
         userService.register(requestParam);
+        return Results.success();
+    }
+
+    @PutMapping("/v1/user")
+    public Result<Void> update(@RequestBody UserUpdateReqDTO requestParam) {
+        userService.update(requestParam);
+        return Results.success();
+    }
+
+    /**
+     * 用户登录
+     */
+    @PostMapping("/v1/user/login")
+    public Result<UserLoginRespDTO> login(@RequestBody UserLoginReqDTO requestParam) {
+        return Results.success(userService.login(requestParam));
+    }
+
+    @GetMapping("/v1/user/check-login")
+    public Result<Boolean> checkLogin(@RequestParam("username") String username, @RequestParam("token") String token) {
+        return Results.success(userService.checkLogin(username, token));
+    }
+
+    /**
+     * 用户退出登录
+     */
+    @DeleteMapping("/v1/user/logout")
+    public Result<Void> logout(@RequestParam("username") String username, @RequestParam("token") String token) {
+        userService.logout(username, token);
         return Results.success();
     }
 }
