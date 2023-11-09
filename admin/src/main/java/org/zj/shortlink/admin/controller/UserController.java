@@ -1,5 +1,6 @@
 package org.zj.shortlink.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zj.shortlink.admin.common.convention.result.Result;
 import org.zj.shortlink.admin.common.convention.result.Results;
 import org.zj.shortlink.admin.common.enums.UserErrorCodeEnum;
+import org.zj.shortlink.admin.dto.resp.UserActualRespDTO;
 import org.zj.shortlink.admin.dto.resp.UserRespDTO;
 import org.zj.shortlink.admin.service.UserService;
 
@@ -27,18 +29,26 @@ public class UserController {
      * 而@Resource在JDK17后改包了，所以也没有那么完美
      */
     private final UserService userService;
+
     /**
-     * 通过 errorCode、errorMessage 构建失败响应
+     * 根据用户名查询脱敏后信息
      */
-    public static Result<Void> failure(String errorCode, String errorMessage) {
-        return new Result<Void>()
-                .setCode(errorCode)
-                .setMessage(errorMessage);
-    }
     @GetMapping("/api/shortlink/v1/user/{username}")
     public Result<UserRespDTO> getUserByUsername(@PathVariable("username") String username) {
         log.warn("username:{}", username);
         UserRespDTO result = userService.getUserByUsername(username);
         return Results.success(result);
     }
+
+    /**
+     * 根据用户名查询未脱敏信息
+     */
+    @GetMapping("/api/shortlink/v1/actual/user/{username}")
+    public Result<UserActualRespDTO> getActualUserByUsername(@PathVariable("username") String username) {
+        log.warn("username:{}", username);
+        UserRespDTO result = userService.getUserByUsername(username);
+        return Results.success(BeanUtil.toBean(result, UserActualRespDTO.class));
+    }
+
+
 }
