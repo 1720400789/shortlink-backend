@@ -9,10 +9,6 @@ import org.zj.shortlink.admin.common.serialize.PhoneDesensitizationSerializer;
  */
 @Data
 public class UserActualRespDTO {
-    /**
-     * ID
-     */
-    private Long id;
 
     /**
      * 用户名

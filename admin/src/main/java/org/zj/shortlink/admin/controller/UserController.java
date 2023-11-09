@@ -3,13 +3,10 @@ package org.zj.shortlink.admin.controller;
 import cn.hutool.core.bean.BeanUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.zj.shortlink.admin.common.convention.result.Result;
 import org.zj.shortlink.admin.common.convention.result.Results;
-import org.zj.shortlink.admin.common.enums.UserErrorCodeEnum;
+import org.zj.shortlink.admin.dto.req.UserRegisterReqDTO;
 import org.zj.shortlink.admin.dto.resp.UserActualRespDTO;
 import org.zj.shortlink.admin.dto.resp.UserRespDTO;
 import org.zj.shortlink.admin.service.UserService;
@@ -19,6 +16,7 @@ import org.zj.shortlink.admin.service.UserService;
  */
 @Slf4j
 @RestController
+@RequestMapping("/api/short-link")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -33,7 +31,7 @@ public class UserController {
     /**
      * 根据用户名查询脱敏后信息
      */
-    @GetMapping("/api/shortlink/v1/user/{username}")
+    @GetMapping("/v1/user/{username}")
     public Result<UserRespDTO> getUserByUsername(@PathVariable("username") String username) {
         log.warn("username:{}", username);
         UserRespDTO result = userService.getUserByUsername(username);
@@ -43,12 +41,27 @@ public class UserController {
     /**
      * 根据用户名查询未脱敏信息
      */
-    @GetMapping("/api/shortlink/v1/actual/user/{username}")
+    @GetMapping("/v1/actual/user/{username}")
     public Result<UserActualRespDTO> getActualUserByUsername(@PathVariable("username") String username) {
         log.warn("username:{}", username);
         UserRespDTO result = userService.getUserByUsername(username);
         return Results.success(BeanUtil.toBean(result, UserActualRespDTO.class));
     }
 
+    @GetMapping("/v1/user/has-username")
+    public Result<Boolean> hasUsername(@RequestParam("username") String username) {
+        return Results.success(userService.hasUsername(username));
+    }
 
+    /**
+     * 注册用户
+     * @param requestParam 用户提交信息
+     * @return 无返回值
+     */
+    @PostMapping("/v1/user/register")
+    public Result<Void> register(@RequestBody UserRegisterReqDTO requestParam) {
+        log.warn("用户名：{}", requestParam.getUsername());
+        userService.register(requestParam);
+        return Results.success();
+    }
 }
