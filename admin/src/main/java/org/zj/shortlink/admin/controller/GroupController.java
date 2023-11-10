@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.zj.shortlink.admin.common.convention.result.Result;
 import org.zj.shortlink.admin.common.convention.result.Results;
 import org.zj.shortlink.admin.dto.req.ShortLinkGroupSaveReqDTO;
+import org.zj.shortlink.admin.dto.req.ShortLinkGroupUpdateReqDTO;
 import org.zj.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import org.zj.shortlink.admin.service.GroupService;
 
@@ -38,4 +39,9 @@ public class GroupController {
     }
 
 
+    @PutMapping("/v1/group")
+    public Result<Void> updateGroup(@RequestBody ShortLinkGroupUpdateReqDTO requestParam) {
+        groupService.updateGroup(requestParam);
+        return Results.success();
+    }
 }
