@@ -3,8 +3,8 @@ package org.zj.shortlink.admin.dao.entity;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
+import org.zj.shortlink.admin.common.database.BaseDO;
 
 /**
  * 
@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @TableName(value ="t_user")
-public class UserDO implements Serializable {
+public class UserDO extends BaseDO implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -59,22 +59,5 @@ public class UserDO implements Serializable {
     @TableField(value = "deletion_time")
     private Long deletionTime;
 
-    /**
-     * 创建时间
-     */
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private Date createTime;
-
-    /**
-     * 修改时间
-     */
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
-
-    /**
-     * 删除标识 0：未删除 1：已删除
-     */
-    @TableField(value = "del_flag", fill = FieldFill.INSERT)
-    private Integer delFlag;
 
 }
