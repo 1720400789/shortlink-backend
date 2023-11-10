@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.zj.shortlink.admin.common.biz.user.UserContext;
 import org.zj.shortlink.admin.dao.entity.GroupDO;
 import org.zj.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import org.zj.shortlink.admin.service.GroupService;
@@ -32,6 +33,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
         GroupDO groupDO = GroupDO.builder()
                 .gid(RandomGenerator.generateRandomString())
+                .username(UserContext.getUsername())
                 .name(groupName)
                 .sortOrder(0)
                 .build();
@@ -41,10 +43,11 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
     @Override
     public List<ShortLinkGroupRespDTO> listGroup() {
+        log.warn("username: {}", UserContext.getUsername());
         LambdaQueryWrapper<GroupDO> lambdaQueryWrapper = Wrappers.lambdaQuery(GroupDO.class)
                 .eq(GroupDO::getDelFlag, 0)
                 // TODO 获取用户名
-//                .eq(GroupDO::getUsername, null)
+                .eq(GroupDO::getUsername, UserContext.getUsername())
                 .orderByDesc(GroupDO::getSortOrder, GroupDO::getUpdateTime);
 
         List<GroupDO> groupDOList = baseMapper.selectList(lambdaQueryWrapper);

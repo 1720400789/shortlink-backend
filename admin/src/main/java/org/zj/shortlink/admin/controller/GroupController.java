@@ -29,10 +29,13 @@ public class GroupController {
     }
 
     /**
-     *
+     * 获取短链接分组
+     * 会主动从用户上下文UserContext中获取username然后后去对应用户创建的短链接分组
      */
     @GetMapping("/v1/group")
     public Result<List<ShortLinkGroupRespDTO>> listGroup() {
         return Results.success(groupService.listGroup());
     }
+
+
 }
