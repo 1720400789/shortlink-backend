@@ -19,7 +19,7 @@ import org.zj.shortlink.admin.service.UserService;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/short-link")
+@RequestMapping("/api/short-link/admin")
 @RequiredArgsConstructor
 public class UserController {
 

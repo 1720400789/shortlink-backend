@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.zj.shortlink.admin.common.convention.result.Result;
 import org.zj.shortlink.admin.common.convention.result.Results;
 import org.zj.shortlink.admin.dto.req.ShortLinkGroupSaveReqDTO;
+import org.zj.shortlink.admin.dto.req.ShortLinkGroupSortReqDTO;
 import org.zj.shortlink.admin.dto.req.ShortLinkGroupUpdateReqDTO;
 import org.zj.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import org.zj.shortlink.admin.service.GroupService;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/short-link")
+@RequestMapping("/api/short-link/admin")
 @RequiredArgsConstructor
 public class GroupController {
 
@@ -55,6 +56,12 @@ public class GroupController {
     @DeleteMapping("/v1/group")
     public Result<Void> updateGroup(@RequestParam String gid) {
         groupService.deleteGroup(gid);
+        return Results.success();
+    }
+
+    @PostMapping("/v1/group/sort")
+    public Result<Void> sortGroup(@RequestBody List<ShortLinkGroupSortReqDTO> requestParam) {
+        groupService.sortGroup(requestParam);
         return Results.success();
     }
 }
