@@ -66,6 +66,12 @@ public class ShortLinkDO extends BaseDO implements Serializable {
     private String gid;
 
     /**
+     * 网站标识图片
+     */
+    @TableField(value = "favicon")
+    private String favicon;
+
+    /**
      * 启用标识 0：未启用 1：已启用
      */
     @TableField(value = "enable_status")
