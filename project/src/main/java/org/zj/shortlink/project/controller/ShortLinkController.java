@@ -2,6 +2,7 @@ package org.zj.shortlink.project.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.zj.shortlink.project.common.convention.result.Result;
 import org.zj.shortlink.project.common.convention.result.Results;
@@ -14,6 +15,7 @@ import org.zj.shortlink.project.service.ShortLinkService;
 /**
  * 短链接控制层
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/short-link")
 @RequiredArgsConstructor
@@ -37,7 +39,8 @@ public class ShortLinkController {
      * @return 分页集合
      */
     @GetMapping("/v1/page")
-    public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(@RequestBody ShortLinkPageReqDTO requestParam) {
+    public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(ShortLinkPageReqDTO requestParam) {
+        log.warn("分页请求参数：{}", requestParam.toString());
         return Results.success(shortLinkService.pageShortLink(requestParam));
     }
 }
