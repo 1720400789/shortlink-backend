@@ -13,3 +13,7 @@ spring:
     redis:
       host: 127.0.0.1
       port: 6379
+remote-url:
+  short-link:
+    domain: http://127.0.0.1:8001
+    page-uri: /api/short-link/v1/page
