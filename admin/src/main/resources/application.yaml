@@ -6,7 +6,9 @@ spring:
     # ShardingSphere 对 Driver 自定义，实现分库分表等隐藏逻辑
     driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
     # ShardingSphere 配置文件路径
-    url: jdbc:shardingsphere:classpath:shardingsphere-config.yaml
+    # java -jar -Ddatabse.env=prod 下面这种方式使得我们可以在Java启动时传递参数来动态启用配置文件
+    # 下面这个写法就表示：如果上下文参数 database.env 不为空就用参数的，如果为空就默认 dev
+    url: jdbc:shardingsphere:classpath:shardingsphere-config-${database.env:dev}.yaml
   data:
     redis:
       host: 127.0.0.1
