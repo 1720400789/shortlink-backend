@@ -35,7 +35,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         } while (!hasNotUsedGid(gid));
 
         GroupDO groupDO = GroupDO.builder()
-                .gid(RandomGenerator.generateRandomString())
+                .gid(gid)
                 .username(UserContext.getUsername())
                 .name(groupName)
                 .sortOrder(0)
@@ -48,9 +48,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     public List<ShortLinkGroupRespDTO> listGroup() {
         log.warn("username: {}", UserContext.getUsername());
         LambdaQueryWrapper<GroupDO> lambdaQueryWrapper = Wrappers.lambdaQuery(GroupDO.class)
-                .eq(GroupDO::getDelFlag, 0)
                 // TODO 获取用户名
                 .eq(GroupDO::getUsername, UserContext.getUsername())
+                .eq(GroupDO::getDelFlag, 0)
                 .orderByDesc(GroupDO::getSortOrder, GroupDO::getUpdateTime);
 
         List<GroupDO> groupDOList = baseMapper.selectList(lambdaQueryWrapper);
@@ -104,7 +104,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         LambdaQueryWrapper<GroupDO> lambdaQueryWrapper = Wrappers.lambdaQuery(GroupDO.class)
                 .eq(GroupDO::getGid, gid)
                 // TODO 这里username先暂时设置为null，后面写了网关从网关传
-                .eq(GroupDO::getUsername, null);
+                .eq(GroupDO::getUsername, UserContext.getUsername());
         GroupDO hasGroupFlag = baseMapper.selectOne(lambdaQueryWrapper);
 
         return hasGroupFlag == null;
