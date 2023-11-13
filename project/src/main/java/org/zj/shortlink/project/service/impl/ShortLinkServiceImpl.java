@@ -93,6 +93,11 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .build();
     }
 
+    /**
+     * 分页查询短链接
+     * @param requestParam 分页查询参数
+     * @return 分页查询响应
+     */
     @Override
     public IPage<ShortLinkPageRespDTO> pageShortLink(ShortLinkPageReqDTO requestParam) {
         LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
@@ -104,6 +109,11 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         return resultPage.convert(each -> BeanUtil.toBean(each, ShortLinkPageRespDTO.class));
     }
 
+    /**
+     * 根据gid集合返回对应group的短链接数量
+     * @param requestParam gid集合
+     * @return git对应短链接数量集合
+     */
     @Override
     public List<ShortLinkGroupCountQueryRespDTO> listGroupShortLinkCount(List<String> requestParam) {
         QueryWrapper<ShortLinkDO> queryWrapper = Wrappers.query(new ShortLinkDO())
