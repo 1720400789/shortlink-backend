@@ -37,14 +37,19 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
     @Override
     public void saveGroup(String groupName) {
+        saveGroup(UserContext.getUsername(), groupName);
+    }
+
+    @Override
+    public void saveGroup(String username, String groupName) {
         String gid = "";
         do {
             gid = RandomGenerator.generateRandomString();
-        } while (!hasNotUsedGid(gid));
+        } while (!hasNotUsedGid(username, gid));
 
         GroupDO groupDO = GroupDO.builder()
                 .gid(gid)
-                .username(UserContext.getUsername())
+                .username(username)
                 .name(groupName)
                 .sortOrder(0)
                 .build();
@@ -130,12 +135,12 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
      * @param gid 生成的随机gid
      * @return true就是没用使用过
      */
-    private boolean hasNotUsedGid(String gid) {
+    private boolean hasNotUsedGid(String username, String gid) {
         // 检查gid是否已经用过了
         LambdaQueryWrapper<GroupDO> lambdaQueryWrapper = Wrappers.lambdaQuery(GroupDO.class)
                 .eq(GroupDO::getGid, gid)
                 // TODO 这里username先暂时设置为null，后面写了网关从网关传
-                .eq(GroupDO::getUsername, UserContext.getUsername());
+                .eq(GroupDO::getUsername, Optional.ofNullable(username).orElse(UserContext.getUsername()));
         GroupDO hasGroupFlag = baseMapper.selectOne(lambdaQueryWrapper);
 
         return hasGroupFlag == null;

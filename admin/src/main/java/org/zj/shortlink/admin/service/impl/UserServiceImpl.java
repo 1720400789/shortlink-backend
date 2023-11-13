@@ -109,7 +109,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
                 // 新注册的用户同步到布隆过滤器
                 userRegisterCachePenetrationBloomFilter.add(requestParam.getUsername());
                 // 每个用户创建后都有一个默认分组
-                groupService.saveGroup("默认分组");
+                groupService.saveGroup(requestParam.getUsername(),"默认分组");
                 return ;
             }
             throw new ClientException(USER_NAME_EXIST);

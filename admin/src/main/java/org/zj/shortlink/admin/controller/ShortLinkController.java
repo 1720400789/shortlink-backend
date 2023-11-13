@@ -8,6 +8,7 @@ import org.zj.shortlink.admin.common.convention.result.Results;
 import org.zj.shortlink.admin.remote.ShortLinkRemoteService;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkCreateReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkPageReqDTO;
+import org.zj.shortlink.admin.remote.dto.req.ShortLinkUpdateReqDTO;
 import org.zj.shortlink.admin.remote.dto.resp.ShortLinkCreateRespDTO;
 import org.zj.shortlink.admin.remote.dto.resp.ShortLinkPageRespDTO;
 
@@ -26,6 +27,12 @@ public class ShortLinkController {
     @PostMapping("/v1/create")
     public Result<ShortLinkCreateRespDTO> createShortLink(@RequestBody ShortLinkCreateReqDTO requestParam) {
         return shortLinkRemoteService.createShortLink(requestParam);
+    }
+
+    @PostMapping("/v1/update")
+    public Result<Void> updateShortLink(@RequestBody ShortLinkUpdateReqDTO requestParam) {
+        shortLinkRemoteService.updateShortLink(requestParam);
+        return Results.success();
     }
 
     /**
