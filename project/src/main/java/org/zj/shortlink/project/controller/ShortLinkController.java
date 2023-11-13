@@ -9,8 +9,11 @@ import org.zj.shortlink.project.common.convention.result.Results;
 import org.zj.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import org.zj.shortlink.project.dto.req.ShortLinkPageReqDTO;
 import org.zj.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
+import org.zj.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import org.zj.shortlink.project.dto.resp.ShortLinkPageRespDTO;
 import org.zj.shortlink.project.service.ShortLinkService;
+
+import java.util.List;
 
 /**
  * 短链接控制层
@@ -42,5 +45,15 @@ public class ShortLinkController {
     public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(ShortLinkPageReqDTO requestParam) {
         log.warn("分页请求参数：{}", requestParam.toString());
         return Results.success(shortLinkService.pageShortLink(requestParam));
+    }
+
+    /**
+     * 根据gid数组查询对应短链接分组的短链接数量
+     * @param requestParam gid数组
+     * @return 每个gid对应的分组的短链接数量的集合
+     */
+    @GetMapping("/v1/count")
+    public Result<List<ShortLinkGroupCountQueryRespDTO>> listGroupShortLinkCount(@RequestParam("requestParam") List<String> requestParam) {
+        return Results.success(shortLinkService.listGroupShortLinkCount(requestParam));
     }
 }
