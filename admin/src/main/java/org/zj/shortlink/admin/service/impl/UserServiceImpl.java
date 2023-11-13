@@ -22,6 +22,7 @@ import org.zj.shortlink.admin.dto.req.UserRegisterReqDTO;
 import org.zj.shortlink.admin.dto.req.UserUpdateReqDTO;
 import org.zj.shortlink.admin.dto.resp.UserLoginRespDTO;
 import org.zj.shortlink.admin.dto.resp.UserRespDTO;
+import org.zj.shortlink.admin.service.GroupService;
 import org.zj.shortlink.admin.service.UserService;
 import org.zj.shortlink.admin.dao.mapper.UserMapper;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     private final RBloomFilter<String> userRegisterCachePenetrationBloomFilter;
     private final RedissonClient redissonClient;
     private final StringRedisTemplate stringRedisTemplate;
+    private final GroupService groupService;
 
     /**
      * 根据用户名查询用户信息
@@ -76,24 +78,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         return userRegisterCachePenetrationBloomFilter.contains(username);
     }
 
+    /**
+     * 用户注册接口实现
+     * @param requestParam 注册信息
+     */
     @Override
     public void register(UserRegisterReqDTO requestParam) {
+        // 使用布隆过滤器判断用户名是否存在
+        // 布隆过滤器在判断是否存在时可能将不存在判断为存在，但是这个误判概率是可以接受的，而且对用户也影响不大，完全可以让用户再换一个名字
         if (hasUsername(requestParam.getUsername())) {
             throw new ClientException(USER_NAME_EXIST);
         }
+
+        // redis分布式锁
         RLock lock = redissonClient.getLock(LOCK_USER_REGISTER_KEY + requestParam.getUsername());
 
         try {
+            // 获取锁成功则执行插入操作
             if (lock.tryLock()) {
                 try {
                     int insert = baseMapper.insert(BeanUtil.toBean(requestParam, UserDO.class));
+                    // 插入失败则抛出客户端保存用户失败异常
                     if (insert < 1) {
                         throw new ClientException(USER_SAVE_ERROR);
                     }
                 } catch (DuplicateKeyException ex) {
+                    // 数据库层面要做一个 唯一索引 来兜底，以防最极端的情况
                     throw new ClientException(USER_EXIST);
                 }
+                // 新注册的用户同步到布隆过滤器
                 userRegisterCachePenetrationBloomFilter.add(requestParam.getUsername());
+                // 每个用户创建后都有一个默认分组
+                groupService.saveGroup("默认分组");
                 return ;
             }
             throw new ClientException(USER_NAME_EXIST);
