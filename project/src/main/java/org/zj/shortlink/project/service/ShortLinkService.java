@@ -5,6 +5,7 @@ import org.zj.shortlink.project.dao.entity.ShortLinkDO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.zj.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import org.zj.shortlink.project.dto.req.ShortLinkPageReqDTO;
+import org.zj.shortlink.project.dto.req.ShortLinkUpdateReqDTO;
 import org.zj.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
 import org.zj.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import org.zj.shortlink.project.dto.resp.ShortLinkPageRespDTO;
@@ -26,6 +27,12 @@ public interface ShortLinkService extends IService<ShortLinkDO> {
     ShortLinkCreateRespDTO createShortLink(ShortLinkCreateReqDTO requestParam);
 
     /**
+     * 修改短链接
+      * @param requestParam 修改短链接请求参数
+     */
+    void updateShortLink(ShortLinkUpdateReqDTO requestParam);
+
+    /**
      * 分页查询短链接
      * @param requestParam 分页查询参数
      * @return 分页集合
@@ -38,4 +45,6 @@ public interface ShortLinkService extends IService<ShortLinkDO> {
      * @return 每个gid对应的分组的短链接数量的集合
      */
     List<ShortLinkGroupCountQueryRespDTO> listGroupShortLinkCount(List<String> requestParam);
+
+
 }
