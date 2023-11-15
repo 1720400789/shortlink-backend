@@ -113,7 +113,10 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         }
 
         // 将成功入库的短链接同步进布隆过滤器
-        shortUriCreateRegisterCachePenetrationBloomFilter.add(fullShortUrl);
+        boolean add = shortUriCreateRegisterCachePenetrationBloomFilter.add(fullShortUrl);
+        if (!add) {
+            throw new ClassCastException("同步布隆过滤器失败！");
+        }
         return ShortLinkCreateRespDTO.builder()
                 // TODO 域名管理，检查当前用户是否可以用这个域名，协议可以从域名记录中拿，这里测试就暂时写死为http
                 .fullShortUrl("http://" + shortLinkDO.getFullShortUri())
@@ -232,6 +235,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     public void restoreUrl(String shortUri, ServletRequest request, ServletResponse response) {
         String serverName = request.getServerName();
         String fullShortUrl = serverName + "/" + shortUri;
+        log.warn("短链接" + fullShortUrl + "重定向");
 
         // 检查缓存是否存在
         String fullShortKey = String.format(GOTO_SHORT_LINK_KEY, fullShortUrl);
@@ -243,8 +247,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             return ;
         }
 
-        // 查询布隆过滤器中是否存在
-        boolean contains = shortUriCreateRegisterCachePenetrationBloomFilter.contains(fullShortKey);
+        // 查询布隆过滤器中是否存在，注意这里是直接查询 fullShortUrl 是否在布隆过滤器中，对应上面 createShortLink 中也是同步 fullShortLink 到布隆过滤器中
+        boolean contains = shortUriCreateRegisterCachePenetrationBloomFilter.contains(fullShortUrl);
         if (!contains) {
             // 布隆过滤器判断不存在是不会存在误判的，所以这里不会让正常链接跳转不成功
             return ;
