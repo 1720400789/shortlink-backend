@@ -106,7 +106,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         // 将成功入库的短链接同步进布隆过滤器
         shortUriCreateRegisterCachePenetrationBloomFilter.add(fullShortUrl);
         return ShortLinkCreateRespDTO.builder()
-                .fullShortUrl(shortLinkDO.getFullShortUri())
+                // TODO 域名管理，检查当前用户是否可以用这个域名，协议可以从域名记录中拿，这里测试就暂时写死为http
+                .fullShortUrl("http://" + shortLinkDO.getFullShortUri())
                 .originUri(requestParam.getOriginUri())
                 .gid(requestParam.getGid())
                 .build();
@@ -208,7 +209,6 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
      * @param response HTTP 响应
      */
     @SneakyThrows
-    @Transactional
     @Override
     public void restoreUrl(String shortUri, ServletRequest request, ServletResponse response) {
         String serverName = request.getServerName();
