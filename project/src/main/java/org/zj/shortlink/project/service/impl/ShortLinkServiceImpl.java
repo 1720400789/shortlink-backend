@@ -2,6 +2,7 @@ package org.zj.shortlink.project.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.text.StrBuilder;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -15,7 +16,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBloomFilter;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.zj.shortlink.project.common.convention.exception.ServiceException;
 import org.zj.shortlink.project.common.enums.ValiDateTypeEnum;
@@ -36,6 +40,9 @@ import org.zj.shortlink.project.toolkit.HashUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import static org.zj.shortlink.project.common.constant.RedisKeyConstant.*;
 
 /**
 * @author 1720400789
@@ -50,9 +57,11 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
     private final RBloomFilter<String> shortUriCreateRegisterCachePenetrationBloomFilter;
 
-    private final ShortLinkMapper shortLinkMapper;
-
     private final ShortLinkGotoMapper shortLinkGotoMapper;
+
+    private final StringRedisTemplate stringRedisTemplate;
+
+    private final RedissonClient redissonClient;
 
     /**
      * 创建短链接
@@ -208,6 +217,12 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
     /**
      * 短链接跳转
+     * 需要解决的问题：
+     * 缓存击穿：某个时刻缓存失效了，同时大量的请求查询这个缓存，大量的查询就会短时间内打到数据库中
+     *      解决方案：分布式锁
+     * 缓存穿透：恶意请求缓存和数据库中一定不存在的数据，如此以来每次请求就一定会打到数据库上，而缓存对此无能为力
+     *      解决方案：
+     *          1、空对象值缓存
      * @param shortUri 短链接后缀
      * @param request  HTTP 请求
      * @param response HTTP 响应
@@ -218,24 +233,74 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         String serverName = request.getServerName();
         String fullShortUrl = serverName + "/" + shortUri;
 
-        LambdaQueryWrapper<ShortLinkGotoDO> linkGotoQueryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
-                .eq(ShortLinkGotoDO::getFullShortUrl, fullShortUrl);
-        ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(linkGotoQueryWrapper);
-
-        if (shortLinkGotoDO == null) {
-            // 严谨来讲这里需要进行封控
+        // 检查缓存是否存在
+        String fullShortKey = String.format(GOTO_SHORT_LINK_KEY, fullShortUrl);
+        String oringinalLink = stringRedisTemplate.opsForValue().get(fullShortKey);
+        // 缓存存在
+        if (StrUtil.isNotBlank(oringinalLink)) {
+            // 如果有缓存就直接跳转到原始链接
+            ((HttpServletResponse) response).sendRedirect(oringinalLink);
             return ;
         }
 
-        LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
-                .eq(ShortLinkDO::getGid, shortLinkGotoDO.getGid())
-                .eq(ShortLinkDO::getFullShortUri, fullShortUrl)
-                .eq(ShortLinkDO::getDelFlag, 0)
-                .eq(ShortLinkDO::getEnableStatus, 0);
-        ShortLinkDO shortLinkDO = baseMapper.selectOne(queryWrapper);
+        // 查询布隆过滤器中是否存在
+        boolean contains = shortUriCreateRegisterCachePenetrationBloomFilter.contains(fullShortKey);
+        if (!contains) {
+            // 布隆过滤器判断不存在是不会存在误判的，所以这里不会让正常链接跳转不成功
+            return ;
+        }
 
-        if (shortLinkDO != null) {
-            ((HttpServletResponse) response).sendRedirect(shortLinkDO.getOriginUri());
+        // 如果布隆过滤器中存在（但是注意这里可能误判导致恶意请求通过）
+        // 这里我们还会提前缓存空值，为的就是防止恶意攻击用缓存和数据库中都不存在的空值来缓存穿透攻击我们数据库
+        String gotoIsNullKey = String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortKey);
+        String gotoIsNullShortLink = stringRedisTemplate.opsForValue().get(gotoIsNullKey);
+        if (StrUtil.isNotBlank(gotoIsNullShortLink)) {
+            // 如果空值key非空，就说明这个请求是恶意的，只是之前被拦截过一次了，所以得打回恶意请求
+            return ;
+        }
+
+        // 缓存不存在
+        // 如果缓存为空就可能要去查询数据库了
+        // 但是这里要考虑到缓存击穿和缓存穿透的问题
+        // 分布式锁应对缓存击穿问题
+        String lockKey = String.format(LOCK_GOTO_SHORT_LINK_KEY, fullShortUrl);
+        RLock lock = redissonClient.getLock(lockKey);
+        lock.lock();
+        try {
+            oringinalLink = stringRedisTemplate.opsForValue().get(fullShortKey);
+            // 双重判定锁
+            // 上面之所以拿锁就是因为缓存不存在，但是在多线程高并发的情况下，可能某些线程在判断完缓存不存在之后，缓存就由其他的线程填充好了，所以这里再判定一次，以减少一些数据库查询的消耗
+            if (StrUtil.isNotBlank(oringinalLink)) {
+                ((HttpServletResponse) response).sendRedirect(oringinalLink);
+                return ;
+            }
+
+            // 如果缓存依然不存在就只能查询数据库了
+            LambdaQueryWrapper<ShortLinkGotoDO> linkGotoQueryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
+                    .eq(ShortLinkGotoDO::getFullShortUrl, fullShortUrl);
+            ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(linkGotoQueryWrapper);
+            if (shortLinkGotoDO == null) {
+                // 请求在缓存和数据库中都不存在，为了防止缓存穿透，这里要把值保存进缓存中
+                stringRedisTemplate.opsForValue().set(gotoIsNullKey, "-", 30, TimeUnit.MINUTES);
+                // 严谨来讲这里需要进行风险控制
+                return ;
+            }
+            // TODO 这里还要考虑短链接是否过期的问题，如果过期了就直接返回错误就可以了
+            LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
+                    .eq(ShortLinkDO::getGid, shortLinkGotoDO.getGid())
+                    .eq(ShortLinkDO::getFullShortUri, fullShortUrl)
+                    .eq(ShortLinkDO::getDelFlag, 0)
+                    .eq(ShortLinkDO::getEnableStatus, 0);
+            ShortLinkDO shortLinkDO = baseMapper.selectOne(queryWrapper);
+
+            if (shortLinkDO != null) {
+                // 如果查询到了就存入缓存中
+                // TODO 这里也应该设置相对应的时间
+                stringRedisTemplate.opsForValue().set(fullShortKey, shortLinkDO.getOriginUri());
+                ((HttpServletResponse) response).sendRedirect(shortLinkDO.getOriginUri());
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
