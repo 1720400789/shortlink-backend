@@ -36,6 +36,7 @@ import org.zj.shortlink.project.service.ShortLinkService;
 import org.zj.shortlink.project.dao.mapper.ShortLinkMapper;
 import org.springframework.stereotype.Service;
 import org.zj.shortlink.project.toolkit.HashUtil;
+import org.zj.shortlink.project.toolkit.LinkUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -112,7 +113,13 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             }
         }
 
-        // 将成功入库的短链接同步进布隆过滤器
+        // 缓存预热
+        // 将成功入库的短链接同步进布隆过滤器，并加载进缓存
+        stringRedisTemplate.opsForValue().set(
+                fullShortUrl,
+                requestParam.getOriginUri(),
+                LinkUtil.getLinkCacheValidTime(requestParam.getValidDate()),
+                TimeUnit.MILLISECONDS);
         boolean add = shortUriCreateRegisterCachePenetrationBloomFilter.add(fullShortUrl);
         if (!add) {
             throw new ClassCastException("同步布隆过滤器失败！");
