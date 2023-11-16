@@ -260,6 +260,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         boolean contains = shortUriCreateRegisterCachePenetrationBloomFilter.contains(fullShortUrl);
         if (!contains) {
             // 布隆过滤器判断不存在是不会存在误判的，所以这里不会让正常链接跳转不成功
+            // 重定向到我们设置的提示页面
+            ((HttpServletResponse) response).sendRedirect("/page/notfound");
             return ;
         }
 
@@ -269,6 +271,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         String gotoIsNullShortLink = stringRedisTemplate.opsForValue().get(gotoIsNullKey);
         if (StrUtil.isNotBlank(gotoIsNullShortLink)) {
             // 如果空值key非空，就说明这个请求是恶意的，只是之前被拦截过一次了，所以得打回恶意请求
+            ((HttpServletResponse) response).sendRedirect("/page/notfound");
             return ;
         }
 
@@ -296,6 +299,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 // 请求在缓存和数据库中都不存在，为了防止缓存穿透，这里要把值保存进缓存中
                 stringRedisTemplate.opsForValue().set(gotoIsNullKey, "-", 30, TimeUnit.MINUTES);
                 // 严谨来讲这里需要进行风险控制
+                ((HttpServletResponse) response).sendRedirect("/page/notfound");
                 return ;
             }
 
@@ -310,6 +314,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 // 如果短链接不是永久的，并且有效期已经在当前时间之前了，就直接和上面应对 “缓存和数据库中都不存在的情况” 一样的处理
                 if (shortLinkDO.getValidDate() != null && shortLinkDO.getValidDate().before(new Date())){
                     stringRedisTemplate.opsForValue().set(gotoIsNullKey, "-", 30, TimeUnit.MINUTES);
+                    ((HttpServletResponse) response).sendRedirect("/page/notfound");
                     return ;
                 }
                 // 如果查询到了就存入缓存中，这里也应该设置相对应的缓存时间
