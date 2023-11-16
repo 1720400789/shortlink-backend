@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 import org.zj.shortlink.project.toolkit.HashUtil;
 import org.zj.shortlink.project.toolkit.LinkUtil;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -116,7 +117,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         // 缓存预热
         // 将成功入库的短链接同步进布隆过滤器，并加载进缓存
         stringRedisTemplate.opsForValue().set(
-                fullShortUrl,
+                String.format(GOTO_SHORT_LINK_KEY, fullShortUrl),
                 requestParam.getOriginUri(),
                 LinkUtil.getLinkCacheValidTime(requestParam.getValidDate()),
                 TimeUnit.MILLISECONDS);
@@ -254,6 +255,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             return ;
         }
 
+        // 如果缓存中不存在
         // 查询布隆过滤器中是否存在，注意这里是直接查询 fullShortUrl 是否在布隆过滤器中，对应上面 createShortLink 中也是同步 fullShortLink 到布隆过滤器中
         boolean contains = shortUriCreateRegisterCachePenetrationBloomFilter.contains(fullShortUrl);
         if (!contains) {
@@ -261,9 +263,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             return ;
         }
 
-        // 如果布隆过滤器中存在（但是注意这里可能误判导致恶意请求通过）
+        // 如果布隆过滤器中很可能存在（但是注意这里可能误判导致恶意请求通过）
         // 这里我们还会提前缓存空值，为的就是防止恶意攻击用缓存和数据库中都不存在的空值来缓存穿透攻击我们数据库
-        String gotoIsNullKey = String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortKey);
+        String gotoIsNullKey = String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl);
         String gotoIsNullShortLink = stringRedisTemplate.opsForValue().get(gotoIsNullKey);
         if (StrUtil.isNotBlank(gotoIsNullShortLink)) {
             // 如果空值key非空，就说明这个请求是恶意的，只是之前被拦截过一次了，所以得打回恶意请求
@@ -296,7 +298,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 // 严谨来讲这里需要进行风险控制
                 return ;
             }
-            // TODO 这里还要考虑短链接是否过期的问题，如果过期了就直接返回错误就可以了
+
             LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
                     .eq(ShortLinkDO::getGid, shortLinkGotoDO.getGid())
                     .eq(ShortLinkDO::getFullShortUri, fullShortUrl)
@@ -305,9 +307,16 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             ShortLinkDO shortLinkDO = baseMapper.selectOne(queryWrapper);
 
             if (shortLinkDO != null) {
-                // 如果查询到了就存入缓存中
-                // TODO 这里也应该设置相对应的时间
-                stringRedisTemplate.opsForValue().set(fullShortKey, shortLinkDO.getOriginUri());
+                // 如果短链接不是永久的，并且有效期已经在当前时间之前了，就直接和上面应对 “缓存和数据库中都不存在的情况” 一样的处理
+                if (shortLinkDO.getValidDate() != null && shortLinkDO.getValidDate().before(new Date())){
+                    stringRedisTemplate.opsForValue().set(gotoIsNullKey, "-", 30, TimeUnit.MINUTES);
+                    return ;
+                }
+                // 如果查询到了就存入缓存中，这里也应该设置相对应的缓存时间
+                stringRedisTemplate.opsForValue().set(
+                        String.format(GOTO_SHORT_LINK_KEY, fullShortUrl),
+                        shortLinkDO.getOriginUri(),
+                        LinkUtil.getLinkCacheValidTime(shortLinkDO.getValidDate()), TimeUnit.MILLISECONDS);
                 ((HttpServletResponse) response).sendRedirect(shortLinkDO.getOriginUri());
             }
         } finally {
