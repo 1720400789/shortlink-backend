@@ -3,10 +3,12 @@ package org.zj.shortlink.project.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.triangulate.VoronoiDiagramBuilder;
 import org.springframework.web.bind.annotation.*;
 import org.zj.shortlink.project.common.convention.result.Result;
 import org.zj.shortlink.project.common.convention.result.Results;
 import org.zj.shortlink.project.dto.req.RecycleBinRecoverReqDTO;
+import org.zj.shortlink.project.dto.req.RecycleBinRemoveReqDTO;
 import org.zj.shortlink.project.dto.req.RecycleBinSaveReqDTO;
 import org.zj.shortlink.project.dto.req.ShortLinkRecycleBinPageReqDTO;
 import org.zj.shortlink.project.dto.resp.ShortLinkPageRespDTO;
@@ -53,4 +55,16 @@ public class RecycleBinController {
         recycleBinService.recoverRecycleBinShortLink(requestParam);
         return Results.success();
     }
+
+    /**
+     * 移除回收站中的短链接
+     * @param requestParam gid 和 fullShortUrl
+     * @return 标识
+     */
+    @PostMapping("/v1/recycle-bin/remove")
+    public Result<Void> removeRecycleBinShortLink(@RequestBody RecycleBinRemoveReqDTO requestParam) {
+        recycleBinService.removeRecycleBinShortLink(requestParam);
+        return Results.success();
+    }
+
 }

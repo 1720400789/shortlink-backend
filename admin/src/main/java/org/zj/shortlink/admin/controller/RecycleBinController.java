@@ -8,6 +8,7 @@ import org.zj.shortlink.admin.common.convention.result.Result;
 import org.zj.shortlink.admin.common.convention.result.Results;
 import org.zj.shortlink.admin.remote.ShortLinkRemoteService;
 import org.zj.shortlink.admin.remote.dto.req.RecycleBinRecoverReqDTO;
+import org.zj.shortlink.admin.remote.dto.req.RecycleBinRemoveReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.RecycleBinSaveReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkRecycleBinPageReqDTO;
 import org.zj.shortlink.admin.remote.dto.resp.ShortLinkPageRespDTO;
@@ -56,6 +57,17 @@ public class RecycleBinController {
     @PostMapping("/v1/recycle-bin/recover")
     public Result<Void> recoverRecycleBinShortLink(@RequestBody RecycleBinRecoverReqDTO requestParam) {
         shortLinkRemoteService.recoverRecycleBinShortLink(requestParam);
+        return Results.success();
+    }
+
+    /**
+     * 移除回收站中的短链接
+     * @param requestParam gid 和 fullShortUrl
+     * @return 标识
+     */
+    @PostMapping("/v1/recycle-bin/remove")
+    public Result<Void> removeRecycleBinShortLink(@RequestBody RecycleBinRemoveReqDTO requestParam) {
+        shortLinkRemoteService.removeRecycleBinShortLink(requestParam);
         return Results.success();
     }
 }

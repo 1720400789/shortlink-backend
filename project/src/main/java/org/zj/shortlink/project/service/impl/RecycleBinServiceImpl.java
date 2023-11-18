@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.zj.shortlink.project.dao.entity.ShortLinkDO;
 import org.zj.shortlink.project.dao.mapper.ShortLinkMapper;
 import org.zj.shortlink.project.dto.req.RecycleBinRecoverReqDTO;
+import org.zj.shortlink.project.dto.req.RecycleBinRemoveReqDTO;
 import org.zj.shortlink.project.dto.req.RecycleBinSaveReqDTO;
 import org.zj.shortlink.project.dto.req.ShortLinkRecycleBinPageReqDTO;
 import org.zj.shortlink.project.dto.resp.ShortLinkPageRespDTO;
@@ -32,6 +33,10 @@ public class RecycleBinServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLin
 
     private final StringRedisTemplate stringRedisTemplate;
 
+    /**
+     * 保存短链接到回收站
+     * @param requestParam 请求参数
+     */
     @Override
     public void saveRecycleBin(RecycleBinSaveReqDTO requestParam) {
         LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
@@ -68,6 +73,10 @@ public class RecycleBinServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLin
         });
     }
 
+    /**
+     * 恢复短链接
+     * @param requestParam 请求参数
+     */
     @Override
     public void recoverRecycleBinShortLink(RecycleBinRecoverReqDTO requestParam) {
         LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
@@ -81,5 +90,21 @@ public class RecycleBinServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLin
         baseMapper.update(shortLinkDO, updateWrapper);
         // 删除判断为空的缓存
         stringRedisTemplate.delete(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, requestParam.getFullShortUrl()));
+    }
+
+    /**
+     * 移除短链接
+     * @param requestParam 移除短链接请求参数
+     */
+    @Override
+    public void removeRecycleBinShortLink(RecycleBinRemoveReqDTO requestParam) {
+        LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
+                .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
+                .eq(ShortLinkDO::getGid, requestParam.getGid())
+                .eq(ShortLinkDO::getEnableStatus, 1)
+                .eq(ShortLinkDO::getDelFlag, 0);
+        ShortLinkDO shortLinkDO = new ShortLinkDO();
+        shortLinkDO.setDelFlag(1);
+        baseMapper.update(shortLinkDO, updateWrapper);
     }
 }
