@@ -82,4 +82,21 @@ public interface ShortLinkRemoteService {
         HttpUtil.post("http://127.0.0.1:8001/api/short-link/v1/recycle-bin/save", JSON.toJSONString(requestParam));
     }
 
+    /**
+     * 分页查询回收站的短链接
+     * @param requestParam 分页短链接请求响应
+     * @return 分页集合
+     */
+    default Result<IPage<ShortLinkPageRespDTO>> pageRecycleBinShortLink(@RequestBody ShortLinkPageReqDTO requestParam) {
+        // 因为最后调用的是GET，不能跟上面一样直接传一整个对象RequestBody
+        // 用Map集合装参数，调用hutool的HttpUtil.get时就会帮我们把Map序列化为Json字符串了
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("gid", requestParam.getGid());
+        requestMap.put("current", requestParam.getCurrent());
+        requestMap.put("size", requestParam.getSize());
+        String resultPageStr = HttpUtil.get("http://127.0.0.1:8001/api/short-link/v1/recycle-bin/page", requestMap);
+
+        return JSON.parseObject(resultPageStr, new TypeReference<>() {});
+    }
+
 }
