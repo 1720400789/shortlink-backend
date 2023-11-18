@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.zj.shortlink.admin.common.convention.result.Result;
 import org.zj.shortlink.admin.common.convention.result.Results;
 import org.zj.shortlink.admin.remote.ShortLinkRemoteService;
+import org.zj.shortlink.admin.remote.dto.req.RecycleBinRecoverReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.RecycleBinSaveReqDTO;
-import org.zj.shortlink.admin.remote.dto.req.ShortLinkPageReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkRecycleBinPageReqDTO;
 import org.zj.shortlink.admin.remote.dto.resp.ShortLinkPageRespDTO;
 import org.zj.shortlink.admin.service.RecycleBinService;
@@ -46,5 +46,16 @@ public class RecycleBinController {
     @GetMapping("/v1/recycle-bin/page")
     public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(@RequestBody ShortLinkRecycleBinPageReqDTO requestParam) {
         return recycleBinService.pageRecycleBinShortLink(requestParam);
+    }
+
+    /**
+     * 恢复回收站段丽娜姐
+     * @param requestParam 要恢复的短链接的 gid 和 fullShortUrl
+     * @return 标识
+     */
+    @PostMapping("/v1/recycle-bin/recover")
+    public Result<Void> recoverRecycleBinShortLink(@RequestBody RecycleBinRecoverReqDTO requestParam) {
+        shortLinkRemoteService.recoverRecycleBinShortLink(requestParam);
+        return Results.success();
     }
 }

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.zj.shortlink.project.common.convention.result.Result;
 import org.zj.shortlink.project.common.convention.result.Results;
+import org.zj.shortlink.project.dto.req.RecycleBinRecoverReqDTO;
 import org.zj.shortlink.project.dto.req.RecycleBinSaveReqDTO;
 import org.zj.shortlink.project.dto.req.ShortLinkRecycleBinPageReqDTO;
 import org.zj.shortlink.project.dto.resp.ShortLinkPageRespDTO;
@@ -40,5 +41,16 @@ public class RecycleBinController {
     public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(ShortLinkRecycleBinPageReqDTO requestParam) {
         log.warn("分页请求参数：{}", requestParam.toString());
         return Results.success(recycleBinService.pageShortLink(requestParam));
+    }
+
+    /**
+     * 恢复回收站段丽娜姐
+     * @param requestParam 要恢复的短链接的 gid 和 fullShortUrl
+     * @return 标识
+     */
+    @PostMapping("/v1/recycle-bin/recover")
+    public Result<Void> recoverRecycleBinShortLink(@RequestBody RecycleBinRecoverReqDTO requestParam) {
+        recycleBinService.recoverRecycleBinShortLink(requestParam);
+        return Results.success();
     }
 }

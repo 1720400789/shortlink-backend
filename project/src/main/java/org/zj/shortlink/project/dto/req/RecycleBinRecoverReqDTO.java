@@ -1,0 +1,20 @@
+package org.zj.shortlink.project.dto.req;
+
+import lombok.Data;
+
+/**
+ * 回收站中短链接恢复保存功能
+ */
+@Data
+public class RecycleBinRecoverReqDTO {
+
+    /**
+     * 分组标识
+     */
+    private String gid;
+
+    /**
+     * 短链接全部分
+     */
+    private String fullShortUrl;
+}
