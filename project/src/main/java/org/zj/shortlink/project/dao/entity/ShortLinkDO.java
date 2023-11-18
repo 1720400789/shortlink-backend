@@ -45,7 +45,7 @@ public class ShortLinkDO extends BaseDO implements Serializable {
      * 完整短链接
      */
     @TableField(value = "full_short_uri")
-    private String fullShortUri;
+    private String fullShortUrl;
 
     /**
      * 原始链接

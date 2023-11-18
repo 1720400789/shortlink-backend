@@ -15,6 +15,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -38,6 +41,8 @@ import org.springframework.stereotype.Service;
 import org.zj.shortlink.project.toolkit.HashUtil;
 import org.zj.shortlink.project.toolkit.LinkUtil;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +94,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .describe(requestParam.getDescribe())
                 .shortUri(shortLinkSuffix)
                 .enableStatus(0)
-                .fullShortUri(fullShortUrl)
+                .fullShortUrl(fullShortUrl)
+                .favicon(getFavicon(requestParam.getOriginUri()))
                 .build();
         ShortLinkGotoDO shortLinkGotoDO = ShortLinkGotoDO.builder()
                 .fullShortUrl(fullShortUrl)
@@ -106,7 +112,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
              * 看起来这一段代码好像有点脱裤子放屁，我们本来就是MySQL报唯一索引的异常了，就说明
              */
             LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
-                            .eq(ShortLinkDO::getFullShortUri, fullShortUrl);
+                            .eq(ShortLinkDO::getFullShortUrl, fullShortUrl);
             ShortLinkDO hasShortLinkDO = baseMapper.selectOne(queryWrapper);
             if (hasShortLinkDO != null) {
                 log.warn("短链接：{} 重复入库", fullShortUrl);
@@ -127,7 +133,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         }
         return ShortLinkCreateRespDTO.builder()
                 // TODO 域名管理，检查当前用户是否可以用这个域名，协议可以从域名记录中拿，这里测试就暂时写死为http
-                .fullShortUrl("http://" + shortLinkDO.getFullShortUri())
+                .fullShortUrl("http://" + shortLinkDO.getFullShortUrl())
                 .originUri(requestParam.getOriginUri())
                 .gid(requestParam.getGid())
                 .build();
@@ -142,7 +148,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     public void updateShortLink(ShortLinkUpdateReqDTO requestParam) {
         // 根据 gid、FullShortUri 查询记录是否存在
         LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
-                .eq(ShortLinkDO::getFullShortUri, requestParam.getFullShortUrl())
+                .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
                 .eq(ShortLinkDO::getGid, requestParam.getOldGid())
                 .eq(ShortLinkDO::getDelFlag, 0)
                 .eq(ShortLinkDO::getEnableStatus, 0);
@@ -157,7 +163,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         // 如果要修改的记录存在
         ShortLinkDO shortLinkDO = ShortLinkDO.builder()
                 .domain(hasShortLinkDO.getDomain())
-                .fullShortUri(hasShortLinkDO.getFullShortUri())
+                .fullShortUrl(hasShortLinkDO.getFullShortUrl())
                 .shortUri(hasShortLinkDO.getShortUri())
                 .clickNum(hasShortLinkDO.getClickNum())
                 .favicon(hasShortLinkDO.getFavicon())
@@ -171,7 +177,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         // 如果短链接不改变分组
         if (Objects.equals(hasShortLinkDO.getGid(), requestParam.getNewGid())) {
             LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
-                    .eq(ShortLinkDO::getFullShortUri, requestParam.getFullShortUrl())
+                    .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
                     .eq(ShortLinkDO::getGid, requestParam.getOldGid())
                     .eq(ShortLinkDO::getDelFlag, 0)
                     .eq(ShortLinkDO::getEnableStatus, 0)
@@ -181,7 +187,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         } else {
             // 如果要改变分组
             LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
-                    .eq(ShortLinkDO::getFullShortUri, requestParam.getFullShortUrl())
+                    .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
                     .eq(ShortLinkDO::getGid, hasShortLinkDO.getGid())
                     .eq(ShortLinkDO::getDelFlag, 0)
                     .eq(ShortLinkDO::getEnableStatus, 0);
@@ -305,25 +311,23 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
             LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
                     .eq(ShortLinkDO::getGid, shortLinkGotoDO.getGid())
-                    .eq(ShortLinkDO::getFullShortUri, fullShortUrl)
+                    .eq(ShortLinkDO::getFullShortUrl, fullShortUrl)
                     .eq(ShortLinkDO::getDelFlag, 0)
                     .eq(ShortLinkDO::getEnableStatus, 0);
             ShortLinkDO shortLinkDO = baseMapper.selectOne(queryWrapper);
 
-            if (shortLinkDO != null) {
+            if (shortLinkDO == null || shortLinkDO.getValidDate().before(new Date())) {
                 // 如果短链接不是永久的，并且有效期已经在当前时间之前了，就直接和上面应对 “缓存和数据库中都不存在的情况” 一样的处理
-                if (shortLinkDO.getValidDate() != null && shortLinkDO.getValidDate().before(new Date())){
-                    stringRedisTemplate.opsForValue().set(gotoIsNullKey, "-", 30, TimeUnit.MINUTES);
-                    ((HttpServletResponse) response).sendRedirect("/page/notfound");
-                    return ;
-                }
-                // 如果查询到了就存入缓存中，这里也应该设置相对应的缓存时间
-                stringRedisTemplate.opsForValue().set(
-                        String.format(GOTO_SHORT_LINK_KEY, fullShortUrl),
-                        shortLinkDO.getOriginUri(),
-                        LinkUtil.getLinkCacheValidTime(shortLinkDO.getValidDate()), TimeUnit.MILLISECONDS);
-                ((HttpServletResponse) response).sendRedirect(shortLinkDO.getOriginUri());
+                stringRedisTemplate.opsForValue().set(gotoIsNullKey, "-", 30, TimeUnit.MINUTES);
+                ((HttpServletResponse) response).sendRedirect("/page/notfound");
+                return ;
             }
+            // 如果查询到了就存入缓存中，这里也应该设置相对应的缓存时间
+            stringRedisTemplate.opsForValue().set(
+                    String.format(GOTO_SHORT_LINK_KEY, fullShortUrl),
+                    shortLinkDO.getOriginUri(),
+                    LinkUtil.getLinkCacheValidTime(shortLinkDO.getValidDate()), TimeUnit.MILLISECONDS);
+            ((HttpServletResponse) response).sendRedirect(shortLinkDO.getOriginUri());
         } finally {
             lock.unlock();
         }
@@ -356,6 +360,22 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             customGenerateCount ++;
         }
         return shortUri;
+    }
+
+    @SneakyThrows
+    private String getFavicon(String url) {
+        URL targetUrl = new URL(url);
+        HttpURLConnection connection = (HttpURLConnection) targetUrl.openConnection();
+        connection.connect();
+        int responseCode = connection.getResponseCode();
+        if (HttpURLConnection.HTTP_OK == responseCode) {
+            Document document = Jsoup.connect(url).get();
+            Element faviconLink = document.select("link[rel~=(?i)^(shortcut )?icon]").first();
+            if (faviconLink != null) {
+                return faviconLink.attr("abs:href");
+            }
+        }
+        return null;
     }
 }
 

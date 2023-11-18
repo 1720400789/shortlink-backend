@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.zj.shortlink.admin.common.convention.result.Result;
+import org.zj.shortlink.admin.remote.dto.req.RecycleBinSaveReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkCreateReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkPageReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkUpdateReqDTO;
@@ -70,6 +71,15 @@ public interface ShortLinkRemoteService {
         String resultPageStr = HttpUtil.get("http://127.0.0.1:8001/api/short-link/v1/count", requestMap);
 
         return JSON.parseObject(resultPageStr, new TypeReference<>() {});
+    }
+
+    /**
+     * 保存回收站
+     * @param requestParam 请求参数
+     * @return 返回集合
+     */
+    default void saveRecycleBin(RecycleBinSaveReqDTO requestParam) {
+        HttpUtil.post("http://127.0.0.1:8001/api/short-link/v1/recycle-bin/save", JSON.toJSONString(requestParam));
     }
 
 }
