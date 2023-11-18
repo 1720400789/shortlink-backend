@@ -8,10 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.zj.shortlink.admin.common.convention.result.Result;
-import org.zj.shortlink.admin.remote.dto.req.RecycleBinSaveReqDTO;
-import org.zj.shortlink.admin.remote.dto.req.ShortLinkCreateReqDTO;
-import org.zj.shortlink.admin.remote.dto.req.ShortLinkPageReqDTO;
-import org.zj.shortlink.admin.remote.dto.req.ShortLinkUpdateReqDTO;
+import org.zj.shortlink.admin.remote.dto.req.*;
 import org.zj.shortlink.admin.remote.dto.resp.ShortLinkCreateRespDTO;
 import org.zj.shortlink.admin.remote.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import org.zj.shortlink.admin.remote.dto.resp.ShortLinkPageRespDTO;
@@ -87,11 +84,11 @@ public interface ShortLinkRemoteService {
      * @param requestParam 分页短链接请求响应
      * @return 分页集合
      */
-    default Result<IPage<ShortLinkPageRespDTO>> pageRecycleBinShortLink(@RequestBody ShortLinkPageReqDTO requestParam) {
+    default Result<IPage<ShortLinkPageRespDTO>> pageRecycleBinShortLink(@RequestBody ShortLinkRecycleBinPageReqDTO requestParam) {
         // 因为最后调用的是GET，不能跟上面一样直接传一整个对象RequestBody
         // 用Map集合装参数，调用hutool的HttpUtil.get时就会帮我们把Map序列化为Json字符串了
         Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("gid", requestParam.getGid());
+        requestMap.put("gidList", requestParam.getGidList());
         requestMap.put("current", requestParam.getCurrent());
         requestMap.put("size", requestParam.getSize());
         String resultPageStr = HttpUtil.get("http://127.0.0.1:8001/api/short-link/v1/recycle-bin/page", requestMap);

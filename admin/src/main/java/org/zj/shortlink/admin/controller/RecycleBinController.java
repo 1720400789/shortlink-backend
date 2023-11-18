@@ -9,7 +9,9 @@ import org.zj.shortlink.admin.common.convention.result.Results;
 import org.zj.shortlink.admin.remote.ShortLinkRemoteService;
 import org.zj.shortlink.admin.remote.dto.req.RecycleBinSaveReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkPageReqDTO;
+import org.zj.shortlink.admin.remote.dto.req.ShortLinkRecycleBinPageReqDTO;
 import org.zj.shortlink.admin.remote.dto.resp.ShortLinkPageRespDTO;
+import org.zj.shortlink.admin.service.RecycleBinService;
 
 /**
  * 回收站控制层
@@ -19,6 +21,8 @@ import org.zj.shortlink.admin.remote.dto.resp.ShortLinkPageRespDTO;
 @RequestMapping("/api/short-link/admin")
 @RestController
 public class RecycleBinController {
+
+    private final RecycleBinService recycleBinService;
 
     /**
      * 后续重构为 SpringCloud Feign 调用
@@ -40,7 +44,7 @@ public class RecycleBinController {
      * @return 分页集合
      */
     @GetMapping("/v1/recycle-bin/page")
-    public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(@RequestBody ShortLinkPageReqDTO requestParam) {
-        return shortLinkRemoteService.pageRecycleBinShortLink(requestParam);
+    public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(@RequestBody ShortLinkRecycleBinPageReqDTO requestParam) {
+        return recycleBinService.pageRecycleBinShortLink(requestParam);
     }
 }

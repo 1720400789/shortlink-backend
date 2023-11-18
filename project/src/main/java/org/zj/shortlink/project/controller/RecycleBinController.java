@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.zj.shortlink.project.common.convention.result.Result;
 import org.zj.shortlink.project.common.convention.result.Results;
 import org.zj.shortlink.project.dto.req.RecycleBinSaveReqDTO;
-import org.zj.shortlink.project.dto.req.ShortLinkPageReqDTO;
+import org.zj.shortlink.project.dto.req.ShortLinkRecycleBinPageReqDTO;
 import org.zj.shortlink.project.dto.resp.ShortLinkPageRespDTO;
 import org.zj.shortlink.project.service.RecycleBinService;
 
@@ -37,7 +37,7 @@ public class RecycleBinController {
      * @return 分页集合
      */
     @GetMapping("/v1/recycle-bin/page")
-    public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(ShortLinkPageReqDTO requestParam) {
+    public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(ShortLinkRecycleBinPageReqDTO requestParam) {
         log.warn("分页请求参数：{}", requestParam.toString());
         return Results.success(recycleBinService.pageShortLink(requestParam));
     }
