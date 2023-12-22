@@ -37,6 +37,11 @@ rules:
           standard:
             shardingColumn: gid
             shardingAlgorithmName: link_stats_table_hash_mod
+    # 绑定表——防止联表查询时出现笛卡尔积现象，虽然在MySQL上直接执行SQL不会出现笛卡尔积的情况，但是联表查询在ShardingSphere的逻辑中，如果不配置绑定表，就会发生笛卡尔积
+    # 绑定表是分片规则一致的关系表，分为主表和子表，例如t_link和t_link_stats_today，均按照gid分片，则此两个表互为绑定表关系。
+    bindingTables:
+      # 这里 t_link 和 t_link_stats_today 的分片键要求一致
+      - t_link, t_link_stats_today
     # 分片算法
     shardingAlgorithms:
       # 数据表分片算法
