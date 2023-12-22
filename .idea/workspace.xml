@@ -4,22 +4,162 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bbb35160-6daa-47a5-8c12-6f7a17f3995f" name="Changes" comment="修改">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/1.bck/user.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/dto/req/UserLoginReqDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/dto/req/UserUpdateReqDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/dto/resp/UserLoginRespDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/admin/src/test/java/org/zj/shortlink/admin/UserTableShardingTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="bbb35160-6daa-47a5-8c12-6f7a17f3995f" name="Changes" comment="feature: 开发短链接回收站管理移除短链接">
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/controller/ShortLinkStatsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/dao/entity/LinkAccessLogsDO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/req/ShortLinkStatsAccessRecordReqDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/req/ShortLinkStatsReqDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp/ShortLinkStatsAccessDailyRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp/ShortLinkStatsAccessRecordRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp/ShortLinkStatsBrowserRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp/ShortLinkStatsDeviceRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp/ShortLinkStatsLocaleCNRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp/ShortLinkStatsNetworkRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp/ShortLinkStatsOsRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp/ShortLinkStatsRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp/ShortLinkStatsTopIpRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp/ShortLinkStatsUvRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/.env.development" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/.eslintrc.cjs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/.prettierrc.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/pnpm-lock.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/public/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/App.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/api/axios.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/api/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/api/modules/group.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/api/modules/smallLinkPage.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/api/modules/user.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/base.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/logo.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/main.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/Andriod.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/Chorme.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/IE.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/Safair.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/WeChat.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/Windows.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/edge.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/firefox.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/iOS.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/linux.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/macOS.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/opera.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/other.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/wifi.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/公众号二维码.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/创意工坊.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/无数据.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/沙漏倒计时.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/电脑.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/短链默认图标.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/移动网络.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/png/移动设备.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/svg/二维码.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/svg/添加.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/svg/移动 竖.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/svg/链接.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/assets/svg/随机.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/components/CTable.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/components/LabelSelect.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/components/emptyList.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/core/auth.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/main.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/router/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/store/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/style.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/utils/plugins.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/home/HomeIndex.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/login/LoginIndex.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/mine/MineIndex.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/mySpace/MySpaceIndex.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/mySpace/components/chartsInfo/BarChart.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/mySpace/components/chartsInfo/ChartsInfo.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/mySpace/components/chartsInfo/KeyValue.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/mySpace/components/chartsInfo/ProgressLine.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/mySpace/components/chartsInfo/ProgressPie.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/mySpace/components/chartsInfo/TitleContent.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/mySpace/components/createLink/CreateLink.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/mySpace/components/createLink/CreateLinks.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/mySpace/components/editLink/EditLink.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/mySpace/components/qrCode/QRCode.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/src/views/recycleBin/RecycleBinIndex.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/console-vue/vite.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/controller/ShortLinkStatsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/entity/LinkAccessLogsDO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/entity/LinkAccessStatsDO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/entity/LinkBrowserStatsDO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/entity/LinkDeviceStatsDO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/entity/LinkLocaleStatsDO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/entity/LinkNetworkStatsDO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/entity/LinkOsStatsDO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/entity/LinkStatsTodayDO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/mapper/LinkAccessLogsMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/mapper/LinkAccessStatsMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/mapper/LinkBrowserStatsMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/mapper/LinkDeviceStatsMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/mapper/LinkLocaleStatsMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/mapper/LinkNetworkStatsMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/mapper/LinkOsStatsMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/mapper/LinkStatsTodayMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/req/ShortLinkGroupStatsAccessRecordReqDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/req/ShortLinkGroupStatsReqDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/req/ShortLinkStatsAccessRecordReqDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/req/ShortLinkStatsReqDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/resp/ShortLinkStatsAccessDailyRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/resp/ShortLinkStatsAccessRecordRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/resp/ShortLinkStatsBrowserRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/resp/ShortLinkStatsDeviceRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/resp/ShortLinkStatsLocaleCNRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/resp/ShortLinkStatsNetworkRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/resp/ShortLinkStatsOsRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/resp/ShortLinkStatsRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/resp/ShortLinkStatsTopIpRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/resp/ShortLinkStatsUvRespDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/LinkAccessLogsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/LinkAccessStatsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/LinkBrowserStatsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/LinkDeviceStatsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/LinkLocaleStatsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/LinkNetworkStatsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/LinkOsStatsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/LinkStatsTodayService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/ShortLinkStatsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/LinkAccessLogsServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/LinkAccessStatsServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/LinkBrowserStatsServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/LinkDeviceStatsServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/LinkLocaleStatsServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/LinkNetworkStatsServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/LinkOsStatsServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/LinkStatsTodayServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkStatsServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/resources/mapper/LinkAccessLogsMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/resources/mapper/LinkAccessStatsMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/resources/mapper/LinkBrowserStatsMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/resources/mapper/LinkDeviceStatsMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/resources/mapper/LinkLocaleStatsMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/resources/mapper/LinkNetworkStatsMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project/src/main/resources/mapper/LinkOsStatsMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/mybatisx/templates.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mybatisx/templates.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/admin/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/config/MyMetaObjectHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/config/MyMetaObjectHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/dto/resp/UserRespDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/dto/resp/UserRespDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/src/main/resources/shardingsphere-config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/resources/shardingsphere-config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/1.bck/user.sql" beforeDir="false" afterPath="$PROJECT_DIR$/1.bck/user.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/ShortLinkRemoteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/ShortLinkRemoteService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/req/ShortLinkPageReqDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/req/ShortLinkPageReqDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp/ShortLinkPageRespDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp/ShortLinkPageRespDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/src/test/java/org/zj/shortlink/admin/UserTableShardingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/test/java/org/zj/shortlink/admin/UserTableShardingTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/common/constant/ShortLinkConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/common/constant/ShortLinkConstant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/entity/ShortLinkDO.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/entity/ShortLinkDO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/resp/ShortLinkPageRespDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/resp/ShortLinkPageRespDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/toolkit/LinkUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/toolkit/LinkUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/src/main/resources/shardingsphere-config-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/resources/shardingsphere-config-dev.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,14 +169,24 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Enum" />
+        <option value="HTML File" />
+        <option value="JUnit5 Test Class" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -54,6 +204,8 @@
   </component>
   <component name="PropertiesComponent">
     <property name="DatabaseDriversLRU" value="mongo&#10;mysql" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="ExpandSpringBootJavaOptionsPanel" value="true" />
     <property name="RequestMappingsPanelOrder0" value="0" />
     <property name="RequestMappingsPanelOrder1" value="1" />
     <property name="RequestMappingsPanelWidth0" value="75" />
@@ -63,15 +215,18 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect" value="MySQL" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/resp" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.17338331" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="ReactorSettings">
@@ -79,15 +234,31 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\JAVASource\shortlink\admin\src\main\java\org\zj\shortlink\admin\remote\dto\resp" />
+      <recent name="D:\JAVASource\shortlink\admin\src\main\java\org\zj\shortlink\admin\remote\dto\req" />
+      <recent name="D:\JAVASource\shortlink" />
       <recent name="D:\JAVASource\shortlink\project\src\main\resources" />
-      <recent name="D:\JAVASource\shortlink\gateway\src\main\resources" />
+      <recent name="D:\JAVASource\shortlink\admin\src\main\resources" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.zj.shortlink.project.service.impl" />
+      <recent name="org.zj.shortlink.project.service" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="org.zj.shortlink.project.service.impl" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="org.zj.shortlink.admin.dto.req" />
-      <recent name="org.zj.shortlink.admin.dto.resp" />
+      <recent name="org.zj.shortlink.admin.dao.entity" />
+      <recent name="org.zj.shortlink.admin.controller" />
+      <recent name="org.zj.shortlink.admin.remote.dto.req" />
+      <recent name="org.zj.shortlink.project.dto.req" />
+      <recent name="org.zj.shortlink.admin.remote.dto.resp" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.ShortLinkAdminApplication">
+  <component name="RunManager" selected="Application.UserTableShardingTest">
     <configuration name="UserTableShardingTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.zj.shortlink.admin.UserTableShardingTest" />
       <module name="admin" />
@@ -101,7 +272,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ShortLinkAdminApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+    <configuration name="ShortLinkAdminApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="admin" />
       <extension name="coverage">
         <pattern>
@@ -110,6 +281,22 @@
         </pattern>
       </extension>
       <option name="SPRING_BOOT_MAIN_CLASS" value="org.zj.shortlink.admin.ShortLinkAdminApplication" />
+      <option name="VM_PARAMETERS" value="-Ddatabase.env=dev" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SHORTEN_COMMAND_LINE" value="NONE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ShortLinkApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="project" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.zj.shortlink.project.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.zj.shortlink.project.ShortLinkApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -124,10 +311,15 @@
       <option name="showConsole" value="true" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Application.UserTableShardingTest" />
+      <item itemvalue="Spring Boot.ShortLinkAdminApplication" />
+      <item itemvalue="Spring Boot.ShortLinkApplication" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Spring Boot.ShortLinkAdminApplication" />
         <item itemvalue="Application.UserTableShardingTest" />
+        <item itemvalue="Spring Boot.ShortLinkApplication" />
       </list>
     </recent_temporary>
   </component>
@@ -144,195 +336,399 @@
       <workItem from="1699442857103" duration="8220000" />
       <workItem from="1699451985889" duration="1812000" />
       <workItem from="1699515272520" duration="3144000" />
-      <workItem from="1699518472812" duration="13025000" />
+      <workItem from="1699518472812" duration="15679000" />
+      <workItem from="1699602928561" duration="14406000" />
+      <workItem from="1699671133374" duration="22000" />
+      <workItem from="1699681492075" duration="3627000" />
+      <workItem from="1699685904505" duration="17165000" />
+      <workItem from="1699755167145" duration="8029000" />
+      <workItem from="1699798403339" duration="6853000" />
+      <workItem from="1699842785011" duration="15592000" />
+      <workItem from="1699885168497" duration="713000" />
+      <workItem from="1700023512062" duration="17412000" />
+      <workItem from="1700139326464" duration="3808000" />
+      <workItem from="1700304741924" duration="10085000" />
+      <workItem from="1700444897440" duration="12000" />
+      <workItem from="1700444931579" duration="12003000" />
+      <workItem from="1700473341426" duration="169000" />
+      <workItem from="1700478448541" duration="2091000" />
+      <workItem from="1700525677949" duration="2246000" />
+      <workItem from="1702215827584" duration="1047000" />
+      <workItem from="1702299890510" duration="73000" />
+      <workItem from="1702299982294" duration="5000" />
+      <workItem from="1702460408797" duration="330000" />
+      <workItem from="1702470314826" duration="2941000" />
+      <workItem from="1702721087962" duration="706000" />
+      <workItem from="1702780891774" duration="137000" />
+      <workItem from="1702783636177" duration="96000" />
+      <workItem from="1702792937098" duration="471000" />
+      <workItem from="1702809108056" duration="7204000" />
+      <workItem from="1702884092855" duration="1500000" />
+      <workItem from="1702975631596" duration="14869000" />
+      <workItem from="1703039537286" duration="20000" />
+      <workItem from="1703039581880" duration="58000" />
+      <workItem from="1703074312034" duration="3054000" />
+      <workItem from="1703211240735" duration="9498000" />
     </task>
-    <task id="LOCAL-00001" summary="shortlink-all初始化，配置全局pom依赖">
-      <created>1699418804642</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
+    <task id="LOCAL-00033" summary="开发短链接后管分组集合">
+      <created>1699607557348</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
       <option name="project" value="LOCAL" />
-      <updated>1699418804642</updated>
+      <updated>1699607557348</updated>
     </task>
-    <task id="LOCAL-00002" summary="开发短链接中心项目初始化">
-      <created>1699515643721</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
+    <task id="LOCAL-00034" summary="开发短链接后管用户上下文封装">
+      <created>1699610330941</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
       <option name="project" value="LOCAL" />
-      <updated>1699515643721</updated>
+      <updated>1699610330941</updated>
     </task>
-    <task id="LOCAL-00003" summary="开发短链接网关项目初始化">
-      <created>1699515659014</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
+    <task id="LOCAL-00035" summary="开发短链接后管用户上下文封装">
+      <created>1699611102795</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
       <option name="project" value="LOCAL" />
-      <updated>1699515659014</updated>
+      <updated>1699611102795</updated>
     </task>
-    <task id="LOCAL-00004" summary="开发短链接网关项目初始化">
-      <created>1699515695141</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
+    <task id="LOCAL-00036" summary="开发短链接后管获取短链接分组">
+      <created>1699611122632</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
       <option name="project" value="LOCAL" />
-      <updated>1699515695146</updated>
+      <updated>1699611122632</updated>
     </task>
-    <task id="LOCAL-00005" summary="开发短链接用户项目-yaml配置web端口及数据库">
-      <created>1699515750382</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
+    <task id="LOCAL-00037" summary="修改用户登录Token过期时间">
+      <created>1699611168452</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
       <option name="project" value="LOCAL" />
-      <updated>1699515750382</updated>
+      <updated>1699611168452</updated>
     </task>
-    <task id="LOCAL-00006" summary="开发短链接用户项目-平台错误码接口">
-      <created>1699515780637</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
+    <task id="LOCAL-00038" summary="用户拦截器中新增忽略登录接口">
+      <created>1699615781346</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
       <option name="project" value="LOCAL" />
-      <updated>1699515780637</updated>
+      <updated>1699615781346</updated>
     </task>
-    <task id="LOCAL-00007" summary="开发短链接用户项目-基础错误码定义">
-      <created>1699515810218</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
+    <task id="LOCAL-00039" summary="后管模块的短链接分组修改">
+      <created>1699615811387</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
       <option name="project" value="LOCAL" />
-      <updated>1699515810218</updated>
+      <updated>1699615811387</updated>
     </task>
-    <task id="LOCAL-00008" summary="开发短链接用户项目-用户具体错误码定义">
-      <created>1699515833832</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
+    <task id="LOCAL-00040" summary="后管模块的短链接分组删除">
+      <created>1699616551324</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
       <option name="project" value="LOCAL" />
-      <updated>1699515833832</updated>
+      <updated>1699616551324</updated>
     </task>
-    <task id="LOCAL-00009" summary="开发短链接用户项目-规约功能">
-      <created>1699515900025</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
+    <task id="LOCAL-00041" summary="重构">
+      <created>1699684112134</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
       <option name="project" value="LOCAL" />
-      <updated>1699515900025</updated>
+      <updated>1699684112134</updated>
     </task>
-    <task id="LOCAL-00010" summary="开发短链接后管系统相关功能">
-      <created>1699515951054</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
+    <task id="LOCAL-00042" summary="中台模块规约">
+      <created>1699706346969</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
       <option name="project" value="LOCAL" />
-      <updated>1699515951054</updated>
+      <updated>1699706346970</updated>
     </task>
-    <task id="LOCAL-00011" summary="开发短链接后管系统相关功能">
-      <created>1699516077708</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
+    <task id="LOCAL-00043" summary="修改">
+      <created>1699706377219</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
       <option name="project" value="LOCAL" />
-      <updated>1699516077708</updated>
+      <updated>1699706377219</updated>
     </task>
-    <task id="LOCAL-00012" summary="其他">
-      <created>1699516396007</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
+    <task id="LOCAL-00044" summary="新增短链接">
+      <created>1699706416081</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
       <option name="project" value="LOCAL" />
-      <updated>1699516396007</updated>
+      <updated>1699706416081</updated>
     </task>
-    <task id="LOCAL-00013" summary="真实用户返回类">
-      <created>1699517348197</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
+    <task id="LOCAL-00045" summary="feature: 用户登录验证拦截器返回友好提示信息">
+      <created>1699709631699</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
       <option name="project" value="LOCAL" />
-      <updated>1699517348197</updated>
+      <updated>1699709631699</updated>
     </task>
-    <task id="LOCAL-00014" summary="用户手机号序列化器">
-      <created>1699517372548</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
+    <task id="LOCAL-00046" summary="feature: 新增项目打包插件">
+      <created>1699709844803</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
       <option name="project" value="LOCAL" />
-      <updated>1699517372548</updated>
+      <updated>1699709844803</updated>
     </task>
-    <task id="LOCAL-00015" summary="短链接后管功能开发">
-      <created>1699517397262</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
+    <task id="LOCAL-00047" summary="feature: 短链接分片分表">
+      <created>1699709878779</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
       <option name="project" value="LOCAL" />
-      <updated>1699517397262</updated>
+      <updated>1699709878779</updated>
     </task>
-    <task id="LOCAL-00016" summary="分布式锁完善用户注册功能">
-      <created>1699525019055</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
+    <task id="LOCAL-00048" summary="feature: MP分页插件">
+      <created>1699718559260</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
       <option name="project" value="LOCAL" />
-      <updated>1699525019055</updated>
+      <updated>1699718559260</updated>
     </task>
-    <task id="LOCAL-00017" summary="利用MP实现元数据自动填充">
-      <created>1699532939746</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
+    <task id="LOCAL-00049" summary="feature: 短链接分页查询">
+      <created>1699718578066</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
       <option name="project" value="LOCAL" />
-      <updated>1699532939746</updated>
+      <updated>1699718578066</updated>
     </task>
-    <task id="LOCAL-00018" summary="新增ShardingSphere依赖">
-      <created>1699532955430</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
+    <task id="LOCAL-00050" summary="feature: 短链接分页查询新增创建时间以及Date类型序列化">
+      <created>1699756437802</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
       <option name="project" value="LOCAL" />
-      <updated>1699532955430</updated>
+      <updated>1699756437803</updated>
     </task>
-    <task id="LOCAL-00019" summary="配合shardingsphere-config.yaml实现分表">
-      <created>1699532992629</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
+    <task id="LOCAL-00051" summary="feature: 新增public key = true">
+      <created>1699756456879</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
       <option name="project" value="LOCAL" />
-      <updated>1699532992629</updated>
+      <updated>1699756456879</updated>
     </task>
-    <task id="LOCAL-00020" summary="布隆过滤器配置">
-      <created>1699533019180</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
+    <task id="LOCAL-00052" summary="feature: 短链接后管系统调用中台请求相关接口">
+      <created>1699764191996</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
       <option name="project" value="LOCAL" />
-      <updated>1699533019180</updated>
+      <updated>1699764191996</updated>
     </task>
-    <task id="LOCAL-00021" summary="ShardingSphere分表详细配置">
-      <created>1699533053350</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
+    <task id="LOCAL-00053" summary="feature: 短链接后管系统新增生产环境">
+      <created>1699764629823</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
       <option name="project" value="LOCAL" />
-      <updated>1699533053350</updated>
+      <updated>1699764629823</updated>
     </task>
-    <task id="LOCAL-00022" summary="真实响应数据集">
-      <created>1699533093836</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
+    <task id="LOCAL-00054" summary="feature: 短链接中台系统修改">
+      <created>1699764644589</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
       <option name="project" value="LOCAL" />
-      <updated>1699533093836</updated>
+      <updated>1699764644589</updated>
     </task>
-    <task id="LOCAL-00023" summary="修改">
-      <created>1699533112973</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
+    <task id="LOCAL-00055" summary="feature: 短链接中台系统服务端部署数据库应用">
+      <created>1699764937714</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
       <option name="project" value="LOCAL" />
-      <updated>1699533112973</updated>
+      <updated>1699764937714</updated>
     </task>
-    <task id="LOCAL-00024" summary="具体用户错误码">
-      <created>1699533129882</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
+    <task id="LOCAL-00056" summary="feature: 短链接后管系统服务端部署数据库应用">
+      <created>1699764955261</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
       <option name="project" value="LOCAL" />
-      <updated>1699533129882</updated>
+      <updated>1699764955261</updated>
     </task>
-    <task id="LOCAL-00025" summary="用户注册请求集">
-      <created>1699533195396</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
+    <task id="LOCAL-00057" summary="feature: 优化用户新增重复报错">
+      <created>1699801766612</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
       <option name="project" value="LOCAL" />
-      <updated>1699533195396</updated>
+      <updated>1699801766613</updated>
     </task>
-    <task id="LOCAL-00026" summary="修改">
-      <created>1699533220438</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
+    <task id="LOCAL-00058" summary="feature: group表分片">
+      <created>1699802026614</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
       <option name="project" value="LOCAL" />
-      <updated>1699533220438</updated>
+      <updated>1699802026614</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00059" summary="feature: 新增分组对接group分片的优化">
+      <created>1699802233341</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1699802233341</updated>
+    </task>
+    <task id="LOCAL-00060" summary="feature: 短链接中台新增统计分组内短链接数量接口">
+      <created>1699842894599</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1699842894599</updated>
+    </task>
+    <task id="LOCAL-00061" summary="feature: 短链接后管的查询短链接分组接口新增获取短链接分组数量">
+      <created>1699845071507</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1699845071507</updated>
+    </task>
+    <task id="LOCAL-00062" summary="feature: 注册用户接口新增用户默认分组功能">
+      <created>1699845576555</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1699845576555</updated>
+    </task>
+    <task id="LOCAL-00063" summary="feature: 前端传递有效期时间序列化">
+      <created>1699851863640</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1699851863640</updated>
+    </task>
+    <task id="LOCAL-00064" summary="feature: 后管remote调用中台的修改短链接接口">
+      <created>1699859213760</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1699859213760</updated>
+    </task>
+    <task id="LOCAL-00065" summary="feature: 中台新增修改短链接接口">
+      <created>1699859231413</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1699859231413</updated>
+    </task>
+    <task id="LOCAL-00066" summary="feature: 新增路由表t_link_goto并分片">
+      <created>1700026201365</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1700026201366</updated>
+    </task>
+    <task id="LOCAL-00067" summary="feature: 新增短链接重定向到原链接接口">
+      <created>1700026236819</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1700026236819</updated>
+    </task>
+    <task id="LOCAL-00068" summary="feature: 中台开发短链接跳转功能">
+      <created>1700046499460</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1700046499461</updated>
+    </task>
+    <task id="LOCAL-00069" summary="feature: 查询短链接分页的结果集拼接协议头">
+      <created>1700047283558</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1700047283558</updated>
+    </task>
+    <task id="LOCAL-00070" summary="optimize: 短链接跳转原始链接应对缓存穿透问题">
+      <created>1700056269577</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1700056269578</updated>
+    </task>
+    <task id="LOCAL-00071" summary="optimize: 短链接跳转原始链接应对缓存穿透问题">
+      <created>1700059694772</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1700059694772</updated>
+    </task>
+    <task id="LOCAL-00072" summary="optimize: 短链接创建成功缓存预热">
+      <created>1700140087268</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1700140087268</updated>
+    </task>
+    <task id="LOCAL-00073" summary="feature: 短链接跳转时，如果已过有效期则设置为空">
+      <created>1700141294894</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1700141294894</updated>
+    </task>
+    <task id="LOCAL-00074" summary="feature: 重构短链接不存在时的跳转页面">
+      <created>1700142157553</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1700142157553</updated>
+    </task>
+    <task id="LOCAL-00075" summary="feature: 短链接移至回收站接口开发">
+      <created>1700308694407</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1700308694407</updated>
+    </task>
+    <task id="LOCAL-00076" summary="optimize: fullShortUrl重构">
+      <created>1700308736162</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1700308736162</updated>
+    </task>
+    <task id="LOCAL-00077" summary="feature: 新增jsoup依赖">
+      <created>1700308794717</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1700308794717</updated>
+    </task>
+    <task id="LOCAL-00078" summary="feature: 开发短链接分页查询回收站功能">
+      <created>1700309972944</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1700309972944</updated>
+    </task>
+    <task id="LOCAL-00079" summary="refactor: 重构短链接分页查询回收站功能">
+      <created>1700311464773</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1700311464773</updated>
+    </task>
+    <task id="LOCAL-00080" summary="feature: 开发短链接回收站管理恢复短链接">
+      <created>1700313373051</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1700313373051</updated>
+    </task>
+    <task id="LOCAL-00081" summary="feature: 开发短链接回收站管理移除短链接">
+      <created>1700314298167</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1700314298167</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -347,29 +743,107 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="shortlink-all初始化，配置全局pom依赖" />
-    <MESSAGE value="开发短链接中心项目初始化" />
-    <MESSAGE value="开发短链接网关项目初始化" />
-    <MESSAGE value="开发短链接用户项目-yaml配置web端口及数据库" />
-    <MESSAGE value="开发短链接用户项目-平台错误码接口" />
-    <MESSAGE value="开发短链接用户项目-基础错误码定义" />
-    <MESSAGE value="开发短链接用户项目-用户具体错误码定义" />
-    <MESSAGE value="开发短链接用户项目-规约功能" />
-    <MESSAGE value="开发短链接后管系统相关功能" />
-    <MESSAGE value="其他" />
-    <MESSAGE value="真实用户返回类" />
-    <MESSAGE value="用户手机号序列化器" />
-    <MESSAGE value="短链接后管功能开发" />
-    <MESSAGE value="分布式锁完善用户注册功能" />
-    <MESSAGE value="利用MP实现元数据自动填充" />
-    <MESSAGE value="新增ShardingSphere依赖" />
-    <MESSAGE value="配合shardingsphere-config.yaml实现分表" />
-    <MESSAGE value="布隆过滤器配置" />
-    <MESSAGE value="ShardingSphere分表详细配置" />
-    <MESSAGE value="真实响应数据集" />
-    <MESSAGE value="具体用户错误码" />
-    <MESSAGE value="用户注册请求集" />
-    <MESSAGE value="修改" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改" />
+    <MESSAGE value="feature: 优化用户新增重复报错" />
+    <MESSAGE value="feature: group表分片" />
+    <MESSAGE value="feature: 新增分组对接group分片的优化" />
+    <MESSAGE value="feature: 短链接中台新增统计分组内短链接数量接口" />
+    <MESSAGE value="feature: 短链接后管的查询短链接分组接口新增获取短链接分组数量" />
+    <MESSAGE value="feature: 注册用户接口新增用户默认分组功能" />
+    <MESSAGE value="feature: 前端传递有效期时间序列化" />
+    <MESSAGE value="feature: 后管remote调用中台的修改短链接接口" />
+    <MESSAGE value="feature: 中台新增修改短链接接口" />
+    <MESSAGE value="feature: 新增路由表t_link_goto并分片" />
+    <MESSAGE value="feature: 新增短链接重定向到原链接接口" />
+    <MESSAGE value="feature: 中台开发短链接跳转功能" />
+    <MESSAGE value="feature: 查询短链接分页的结果集拼接协议头" />
+    <MESSAGE value="optimize: 短链接跳转原始链接应对缓存击穿问题" />
+    <MESSAGE value="optimize: 短链接跳转原始链接应对缓存穿透问题" />
+    <MESSAGE value="optimize: 短链接创建成功缓存预热" />
+    <MESSAGE value="feature: 短链接跳转时，如果已过有效期则设置为空" />
+    <MESSAGE value="feature: 重构短链接不存在时的跳转页面" />
+    <MESSAGE value="feature: 短链接移至回收站接口开发" />
+    <MESSAGE value="optimize: fullShortUrl重构" />
+    <MESSAGE value="feature: 新增jsoup依赖" />
+    <MESSAGE value="feature: 开发短链接分页查询回收站功能" />
+    <MESSAGE value="refactor: 重构短链接分页查询回收站功能" />
+    <MESSAGE value="feature: 开发短链接回收站管理恢复短链接" />
+    <MESSAGE value="feature: 开发短链接回收站管理移除短链接" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature: 开发短链接回收站管理移除短链接" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java</url>
+          <line>277</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java</url>
+          <line>106</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java</url>
+          <line>155</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java</url>
+          <line>405</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java</url>
+          <line>367</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java</url>
+          <line>386</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java</url>
+          <line>359</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java</url>
+          <line>304</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/controller/ShortLinkController.java</url>
+          <line>49</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java</url>
+          <line>125</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/controller/ShortLinkStatsController.java</url>
+          <line>41</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/ShortLinkRemoteService.java</url>
+          <line>132</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/controller/ShortLinkStatsController.java</url>
+          <line>33</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/ShortLinkRemoteService.java</url>
+          <line>120</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -1,5 +1,6 @@
 package org.zj.shortlink.project.dto.resp;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -67,5 +68,35 @@ public class ShortLinkPageRespDTO {
      * 网站标识
      */
     private String favicon;
+
+    /**
+     * 历史总pv数
+     */
+    private Integer totalPv;
+
+    /**
+     * 今日总pv数
+     */
+    private Integer todayPv;
+
+    /**
+     * 历史总uv数
+     */
+    private Integer totalUv;
+
+    /**
+     * 今日总uv数
+     */
+    private Integer todayUv;
+
+    /**
+     * 历史总uip数
+     */
+    private Integer totalUip;
+
+    /**
+     * 今日总uip数
+     */
+    private Integer todayUip;
 
 }
