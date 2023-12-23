@@ -119,6 +119,24 @@ public class ShortLinkDO extends BaseDO implements Serializable {
     @TableField(value = "`total_uip`")
     private Integer totalUip;
 
+    /**
+     * 今日总pv数
+     */
+    @TableField(exist = false)
+    private Integer todayPv;
+
+    /**
+     * 今日总uv数
+     */
+    @TableField(exist = false)
+    private Integer todayUv;
+
+    /**
+     * 今日总uip数
+     */
+    @TableField(exist = false)
+    private Integer todayUip;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

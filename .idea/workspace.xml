@@ -4,16 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bbb35160-6daa-47a5-8c12-6f7a17f3995f" name="Changes" comment="feature: 开发短链接">
+    <list default="true" id="bbb35160-6daa-47a5-8c12-6f7a17f3995f" name="Changes" comment="feature: 开发短链接监控之今日统计">
+      <change afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/dto/req/ShortLinkGroupStatsReqDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/controller/ShortLinkStatsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/controller/ShortLinkStatsController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/ShortLinkRemoteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/ShortLinkRemoteService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/src/test/java/org/zj/shortlink/admin/UserTableShardingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/test/java/org/zj/shortlink/admin/UserTableShardingTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/mapper/LinkStatsTodayMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/mapper/LinkStatsTodayMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/mapper/ShortLinkMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/mapper/ShortLinkMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/req/ShortLinkPageReqDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dto/req/ShortLinkPageReqDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/src/main/resources/mapper/ShortLinkMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/resources/mapper/ShortLinkMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/controller/ShortLinkStatsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/controller/ShortLinkStatsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/entity/ShortLinkDO.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/dao/entity/ShortLinkDO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project/src/main/resources/shardingsphere-config-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/resources/shardingsphere-config-dev.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -106,14 +103,14 @@
       <recent name="org.zj.shortlink.project.service.impl" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.zj.shortlink.admin.remote.dto.req" />
       <recent name="org.zj.shortlink.admin.dao.entity" />
       <recent name="org.zj.shortlink.admin.controller" />
-      <recent name="org.zj.shortlink.admin.remote.dto.req" />
       <recent name="org.zj.shortlink.project.dto.req" />
       <recent name="org.zj.shortlink.admin.remote.dto.resp" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.ShortLinkAdminApplication">
+  <component name="RunManager" selected="Spring Boot.ShortLinkApplication">
     <configuration name="UserTableShardingTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.zj.shortlink.admin.UserTableShardingTest" />
       <module name="admin" />
@@ -223,14 +220,8 @@
       <workItem from="1703039537286" duration="20000" />
       <workItem from="1703039581880" duration="58000" />
       <workItem from="1703074312034" duration="3054000" />
-      <workItem from="1703211240735" duration="20366000" />
-    </task>
-    <task id="LOCAL-00034" summary="开发短链接后管用户上下文封装">
-      <created>1699610330941</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1699610330941</updated>
+      <workItem from="1703211240735" duration="21287000" />
+      <workItem from="1703298795538" duration="3563000" />
     </task>
     <task id="LOCAL-00035" summary="开发短链接后管用户上下文封装">
       <created>1699611102795</created>
@@ -568,7 +559,14 @@
       <option name="project" value="LOCAL" />
       <updated>1703234961927</updated>
     </task>
-    <option name="localTasksCounter" value="83" />
+    <task id="LOCAL-00083" summary="feature: 开发短链接监控之今日统计">
+      <created>1703254891672</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1703254891673</updated>
+    </task>
+    <option name="localTasksCounter" value="84" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -598,7 +596,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feature: group表分片" />
     <MESSAGE value="feature: 新增分组对接group分片的优化" />
     <MESSAGE value="feature: 短链接中台新增统计分组内短链接数量接口" />
     <MESSAGE value="feature: 短链接后管的查询短链接分组接口新增获取短链接分组数量" />
@@ -623,7 +620,8 @@
     <MESSAGE value="feature: 开发短链接回收站管理恢复短链接" />
     <MESSAGE value="feature: 开发短链接回收站管理移除短链接" />
     <MESSAGE value="feature: 开发短链接" />
-    <option name="LAST_COMMIT_MESSAGE" value="feature: 开发短链接" />
+    <MESSAGE value="feature: 开发短链接监控之今日统计" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature: 开发短链接监控之今日统计" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -680,7 +678,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/controller/ShortLinkStatsController.java</url>
-          <line>41</line>
+          <line>42</line>
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -690,7 +688,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/controller/ShortLinkStatsController.java</url>
-          <line>33</line>
+          <line>34</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -712,6 +710,21 @@
           <url>file://$PROJECT_DIR$/admin/src/main/java/org/zj/shortlink/admin/remote/ShortLinkRemoteService.java</url>
           <line>49</line>
           <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkStatsServiceImpl.java</url>
+          <line>274</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/controller/ShortLinkStatsController.java</url>
+          <line>29</line>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/project/src/main/java/org/zj/shortlink/project/service/impl/ShortLinkStatsServiceImpl.java</url>
+          <line>52</line>
+          <option name="timeStamp" value="36" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

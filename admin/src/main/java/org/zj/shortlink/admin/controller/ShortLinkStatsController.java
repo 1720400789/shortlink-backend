@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zj.shortlink.admin.common.convention.result.Result;
 import org.zj.shortlink.admin.common.convention.result.Results;
 import org.zj.shortlink.admin.remote.ShortLinkRemoteService;
+import org.zj.shortlink.admin.remote.dto.req.ShortLinkGroupStatsReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkStatsAccessRecordReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkStatsReqDTO;
 import org.zj.shortlink.admin.remote.dto.resp.ShortLinkStatsAccessRecordRespDTO;
@@ -24,14 +25,14 @@ public class ShortLinkStatsController {
     /**
      * 后续重构为 SpringCloud Feign 调用
      */
-    private final ShortLinkRemoteService shortLinkStatsService =  new ShortLinkRemoteService() {};
+    private final ShortLinkRemoteService shortLinkRemoteService =  new ShortLinkRemoteService() {};
 
     /**
      * 访问单个短链接指定时间内监控数据
      */
     @GetMapping("/api/short-link/admin/v1/stats")
     public Result<ShortLinkStatsRespDTO> shortLinkStats(ShortLinkStatsReqDTO requestParam) {
-        return shortLinkStatsService.oneShortLinkStats(requestParam);
+        return shortLinkRemoteService.oneShortLinkStats(requestParam);
     }
 
     /**
@@ -40,6 +41,14 @@ public class ShortLinkStatsController {
     @GetMapping("/api/short-link/admin/v1/stats/access-record")
     public Result<IPage<ShortLinkStatsAccessRecordRespDTO>> shortLinkStatsAccessRecord(ShortLinkStatsAccessRecordReqDTO requestParam){
         log.debug("短链接：{}", requestParam.getFullShortUrl());
-        return shortLinkStatsService.shortLinkStatsAccessRecord(requestParam);
+        return shortLinkRemoteService.shortLinkStatsAccessRecord(requestParam);
+    }
+
+    /**
+     * 访问分组短链接指定时间内监控数据
+     */
+    @GetMapping("/api/short-link/admin/v1/stats/group")
+    public Result<ShortLinkStatsRespDTO> groupShortLinkStats(ShortLinkGroupStatsReqDTO requestParam) {
+        return shortLinkRemoteService.groupShortLinkStats(requestParam);
     }
 }

@@ -49,9 +49,7 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
      */
     @Override
     public ShortLinkStatsRespDTO oneShortLinkStats(ShortLinkStatsReqDTO requestParam) {
-        // 返回该短链接某段时间中的 pv、uv、uip 信息
         List<LinkAccessStatsDO> listStatsByShortLink = linkAccessStatsMapper.listStatsByShortLink(requestParam);
-        // 如果返回集为空，就返回一个 null 标识，意在提醒前端不必展示
         if (CollUtil.isEmpty(listStatsByShortLink)) {
             return null;
         }
@@ -59,20 +57,12 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
         LinkAccessStatsDO pvUvUidStatsByShortLink = linkAccessLogsMapper.findPvUvUidStatsByShortLink(requestParam);
         // 基础访问详情
         List<ShortLinkStatsAccessDailyRespDTO> daily = new ArrayList<>();
-        // DateUtil.rangeToList 返回 start 日期到 end 日期中间的日期组成的 List 集合
-        List<String> rangeDates = DateUtil.rangeToList(DateUtil.parse(requestParam.getStartDate()), DateUtil.parse(requestParam.getEndDate()), DateField.DAY_OF_MONTH)
-                .stream()
+        List<String> rangeDates = DateUtil.rangeToList(DateUtil.parse(requestParam.getStartDate()), DateUtil.parse(requestParam.getEndDate()), DateField.DAY_OF_MONTH).stream()
                 .map(DateUtil::formatDate)
                 .toList();
-        // forEach 遍历 rangeDates 的每个日期
         rangeDates.forEach(each -> listStatsByShortLink.stream()
-                // filter 寻找 listStatsByShortLink 中元素的 date 与 each 相同的元素
                 .filter(item -> Objects.equals(each, DateUtil.formatDate(item.getDate())))
-                // 如果有则取出第一个元素，并返回 Optional 对象
                 .findFirst()
-                // ifPresentOrElse 有两个参数
-                // 一个是针对 Optional 对象中存在值时要执行的操作（一个 Consumer），用于处理 Optional 对象
-                // 另一个是在 Optional 对象为空时要执行的操作（一个 Runnable）
                 .ifPresentOrElse(item -> {
                     ShortLinkStatsAccessDailyRespDTO accessDailyRespDTO = ShortLinkStatsAccessDailyRespDTO.builder()
                             .date(each)
@@ -90,11 +80,9 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                             .build();
                     daily.add(accessDailyRespDTO);
                 }));
-
         // 地区访问详情（仅国内）
         List<ShortLinkStatsLocaleCNRespDTO> localeCnStats = new ArrayList<>();
         List<LinkLocaleStatsDO> listedLocaleByShortLink = linkLocaleStatsMapper.listLocaleByShortLink(requestParam);
-        // 计算该短链接被访问的总次数，方便后面计算每个省份访问该短链接所占百分比
         int localeCnSum = listedLocaleByShortLink.stream()
                 .mapToInt(LinkLocaleStatsDO::getCnt)
                 .sum();
@@ -108,7 +96,6 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .build();
             localeCnStats.add(localeCNRespDTO);
         });
-
         // 小时访问详情
         List<Integer> hourStats = new ArrayList<>();
         List<LinkAccessStatsDO> listHourStatsByShortLink = linkAccessStatsMapper.listHourStatsByShortLink(requestParam);
@@ -121,7 +108,6 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .orElse(0);
             hourStats.add(hourCnt);
         }
-
         // 高频访问IP详情
         List<ShortLinkStatsTopIpRespDTO> topIpStats = new ArrayList<>();
         List<HashMap<String, Object>> listTopIpByShortLink = linkAccessLogsMapper.listTopIpByShortLink(requestParam);
@@ -132,7 +118,6 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .build();
             topIpStats.add(statsTopIpRespDTO);
         });
-
         // 一周访问详情
         List<Integer> weekdayStats = new ArrayList<>();
         List<LinkAccessStatsDO> listWeekdayStatsByShortLink = linkAccessStatsMapper.listWeekdayStatsByShortLink(requestParam);
@@ -145,7 +130,6 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .orElse(0);
             weekdayStats.add(weekdayCnt);
         }
-
         // 浏览器访问详情
         List<ShortLinkStatsBrowserRespDTO> browserStats = new ArrayList<>();
         List<HashMap<String, Object>> listBrowserStatsByShortLink = linkBrowserStatsMapper.listBrowserStatsByShortLink(requestParam);
@@ -162,7 +146,6 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .build();
             browserStats.add(browserRespDTO);
         });
-
         // 操作系统访问详情
         List<ShortLinkStatsOsRespDTO> osStats = new ArrayList<>();
         List<HashMap<String, Object>> listOsStatsByShortLink = linkOsStatsMapper.listOsStatsByShortLink(requestParam);
@@ -179,29 +162,21 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .build();
             osStats.add(osRespDTO);
         });
-
         // 访客访问类型详情
         List<ShortLinkStatsUvRespDTO> uvTypeStats = new ArrayList<>();
         HashMap<String, Object> findUvTypeByShortLink = linkAccessLogsMapper.findUvTypeCntByShortLink(requestParam);
-        // 从 findUvTypeByShortLink 中取得 oldUserCnt
         int oldUserCnt = Integer.parseInt(
-                // Optional.ofNullable 将 findUvTypeByShortLink 包装为 Optional 对象，防止 null 的情况
                 Optional.ofNullable(findUvTypeByShortLink)
-                        // 如果 findUvTypeByShortLink 不为 null，则使用 map 方法获取键为 "oldUserCnt" 的值
                         .map(each -> each.get("oldUserCnt"))
-                        // 如果获取到 "oldUserCnt" 对应的值不为 null，则将其转换为字符串
                         .map(Object::toString)
-                        // 如果前面的操作返回了 null，或者没有取到有效的 "oldUserCnt" 值，那么将会返回默认值 "0"
                         .orElse("0")
         );
-        // 从 findUvTypeByShortLink 中取得 newUserCnt
         int newUserCnt = Integer.parseInt(
                 Optional.ofNullable(findUvTypeByShortLink)
                         .map(each -> each.get("newUserCnt"))
                         .map(Object::toString)
                         .orElse("0")
         );
-        // 求得访问用户新旧比值
         int uvSum = oldUserCnt + newUserCnt;
         double oldRatio = (double) oldUserCnt / uvSum;
         double actualOldRatio = Math.round(oldRatio * 100.0) / 100.0;
@@ -219,7 +194,6 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                 .ratio(actualOldRatio)
                 .build();
         uvTypeStats.add(oldUvRespDTO);
-
         // 访问设备类型详情
         List<ShortLinkStatsDeviceRespDTO> deviceStats = new ArrayList<>();
         List<LinkDeviceStatsDO> listDeviceStatsByShortLink = linkDeviceStatsMapper.listDeviceStatsByShortLink(requestParam);
@@ -236,7 +210,6 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .build();
             deviceStats.add(deviceRespDTO);
         });
-
         // 访问网络类型详情
         List<ShortLinkStatsNetworkRespDTO> networkStats = new ArrayList<>();
         List<LinkNetworkStatsDO> listNetworkStatsByShortLink = linkNetworkStatsMapper.listNetworkStatsByShortLink(requestParam);
