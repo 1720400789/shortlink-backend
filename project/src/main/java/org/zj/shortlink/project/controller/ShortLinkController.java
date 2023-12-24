@@ -9,9 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.zj.shortlink.project.common.convention.result.Result;
 import org.zj.shortlink.project.common.convention.result.Results;
+import org.zj.shortlink.project.dto.req.ShortLinkBatchCreateReqDTO;
 import org.zj.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import org.zj.shortlink.project.dto.req.ShortLinkPageReqDTO;
 import org.zj.shortlink.project.dto.req.ShortLinkUpdateReqDTO;
+import org.zj.shortlink.project.dto.resp.ShortLinkBatchCreateRespDTO;
 import org.zj.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
 import org.zj.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import org.zj.shortlink.project.dto.resp.ShortLinkPageRespDTO;
@@ -48,6 +50,14 @@ public class ShortLinkController {
     @PostMapping("/api/short-link/v1/create")
     public Result<ShortLinkCreateRespDTO> createShortLink(@RequestBody ShortLinkCreateReqDTO requestParam) {
         return Results.success(shortLinkService.createShortLink(requestParam));
+    }
+
+    /**
+     * 批量创建短链接
+     */
+    @PostMapping("/api/short-link/v1/create/batch")
+    public Result<ShortLinkBatchCreateRespDTO> batchCreateShortLink(@RequestBody ShortLinkBatchCreateReqDTO requestParam) {
+        return Results.success(shortLinkService.batchCreateShortLink(requestParam));
     }
 
     @PostMapping("/api/short-link/v1/update")
