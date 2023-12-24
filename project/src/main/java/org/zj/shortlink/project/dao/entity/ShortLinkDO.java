@@ -51,7 +51,7 @@ public class ShortLinkDO extends BaseDO implements Serializable {
      * 原始链接
      */
     @TableField(value = "origin_uri")
-    private String originUri;
+    private String originUrl;
 
     /**
      * 点击量
@@ -120,22 +120,10 @@ public class ShortLinkDO extends BaseDO implements Serializable {
     private Integer totalUip;
 
     /**
-     * 今日总pv数
+     * 删除时的时间戳
      */
-    @TableField(exist = false)
-    private Integer todayPv;
-
-    /**
-     * 今日总uv数
-     */
-    @TableField(exist = false)
-    private Integer todayUv;
-
-    /**
-     * 今日总uip数
-     */
-    @TableField(exist = false)
-    private Integer todayUip;
+    @TableField(value = "`del_time`")
+    private Long delTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

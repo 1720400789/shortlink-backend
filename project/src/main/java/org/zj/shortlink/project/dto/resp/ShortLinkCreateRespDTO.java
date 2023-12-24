@@ -25,7 +25,7 @@ public class ShortLinkCreateRespDTO {
     /**
      * 原始链接
      */
-    private String originUri;
+    private String originUrl;
 
     /**
      * 短链接

@@ -8,8 +8,8 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="domain" column="domain" jdbcType="VARCHAR"/>
             <result property="shortUri" column="short_uri" jdbcType="VARCHAR"/>
-            <result property="fullShortUri" column="full_short_uri" jdbcType="VARCHAR"/>
-            <result property="originUri" column="origin_uri" jdbcType="VARCHAR"/>
+            <result property="fullShortUrl" column="full_short_uri" jdbcType="VARCHAR"/>
+            <result property="originUrl" column="origin_uri" jdbcType="VARCHAR"/>
             <result property="clickNum" column="click_num" jdbcType="INTEGER"/>
             <result property="gid" column="gid" jdbcType="VARCHAR"/>
             <result property="enableStatus" column="enable_status" jdbcType="TINYINT"/>

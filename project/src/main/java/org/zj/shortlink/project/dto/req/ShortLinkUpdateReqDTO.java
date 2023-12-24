@@ -11,7 +11,7 @@ public class ShortLinkUpdateReqDTO {
     /**
      * 原始链接
      */
-    private String originUri;
+    private String originUrl;
 
     /**
      * 完整短链接
@@ -19,15 +19,14 @@ public class ShortLinkUpdateReqDTO {
     private String fullShortUrl;
 
     /**
-     * 因为考虑到短链接可以修改分组,如果分组不变的话
      * 原来的分组标识
      */
-    private String oldGid;
+    private String originGid;
 
     /**
-     * 新的分组标识
+     * 修改分组后新的分组标识
      */
-    private String newGid;
+    private String gid;
 
     /**
      * 有效期类型 0：永久有效 1：用户自定义

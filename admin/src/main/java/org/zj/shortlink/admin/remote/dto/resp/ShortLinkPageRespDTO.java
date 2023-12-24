@@ -24,7 +24,7 @@ public class ShortLinkPageRespDTO {
     /**
      * 短链接
      */
-    private String shortUri;
+    private String shortUrl;
 
     /**
      * 完整短链接

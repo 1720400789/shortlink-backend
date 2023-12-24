@@ -20,7 +20,7 @@ public class ShortLinkCreateReqDTO {
     /**
      * 原始链接
      */
-    private String originUri;
+    private String originUrl;
 
     /**
      * 分组标识
