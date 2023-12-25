@@ -916,10 +916,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             // 加上当前系统的时间毫秒数，使得即使是同一链接也能尽量生成不同的短链接
             originUrl += System.currentTimeMillis();
             shortUri = HashUtil.hashToBase62(originUrl);
-            String fullShortUrl = requestParam.getDomain() + "/" + shortUri;
 
             // 走布隆过滤器
-            if (!shortUriCreateRegisterCachePenetrationBloomFilter.contains(fullShortUrl)) {
+            if (!shortUriCreateRegisterCachePenetrationBloomFilter.contains(createShortLinkDefaultDomain + "/" + shortUri)) {
                 // 布隆过滤器中不存在就说明生成的短链接可以用
                 break;
             }
