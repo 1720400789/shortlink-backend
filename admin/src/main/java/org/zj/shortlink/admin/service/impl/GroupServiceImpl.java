@@ -1,13 +1,18 @@
 package org.zj.shortlink.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.zj.shortlink.admin.common.biz.user.UserContext;
+import org.zj.shortlink.admin.common.convention.exception.ClientException;
 import org.zj.shortlink.admin.common.convention.result.Result;
 import org.zj.shortlink.admin.dao.entity.GroupDO;
 import org.zj.shortlink.admin.dto.req.ShortLinkGroupSortReqDTO;
@@ -24,6 +29,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static org.zj.shortlink.admin.common.constant.RedisCacheConstant.LOCK_GROUP_CREATE_KEY;
+
 /**
 * @author 1720400789
 * @description 针对表【t_group】的数据库操作Service实现
@@ -31,9 +38,15 @@ import java.util.Optional;
 */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implements GroupService {
 
     ShortLinkRemoteService shortLinkRemoteService = new ShortLinkRemoteService() {};
+
+    private final RedissonClient redissonClient;
+
+    @Value("${short-link.group.max-num}")
+    private Integer groupMaxNum;
 
     @Override
     public void saveGroup(String groupName) {
@@ -42,19 +55,49 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
     @Override
     public void saveGroup(String username, String groupName) {
-        String gid = "";
-        do {
-            gid = RandomGenerator.generateRandomString();
-        } while (!hasNotUsedGid(username, gid));
+        // 分布式锁
+        RLock lock = redissonClient.getLock(String.format(LOCK_GROUP_CREATE_KEY, username));
+        lock.lock();
+        try {
+            LambdaQueryWrapper<GroupDO> queryWrapper = Wrappers.lambdaQuery(GroupDO.class)
+                    .eq(GroupDO::getUsername, username)
+                    .eq(GroupDO::getDelFlag, 0);
+            List<GroupDO> groupDOList = baseMapper.selectList(queryWrapper);
+            // 如果该用户所创建的分组数量已经到达上限则抛出异常
+            if (CollUtil.isNotEmpty(groupDOList) && groupDOList.size() == groupMaxNum) {
+                throw new ClientException(String.format("已超出最大分组数：%d", groupMaxNum));
+            }
+            String gid;
+            // 尝试获取 gid
+            do {
+                gid = RandomGenerator.generateRandomString();
+            } while (!hasNotUsedGid(username, gid));
+            GroupDO groupDO = GroupDO.builder()
+                    .gid(gid)
+                    .sortOrder(0)
+                    .username(username)
+                    .name(groupName)
+                    .build();
+            baseMapper.insert(groupDO);
+        } finally {
+            lock.unlock();
+        }
+    }
 
-        GroupDO groupDO = GroupDO.builder()
-                .gid(gid)
-                .username(username)
-                .name(groupName)
-                .sortOrder(0)
-                .build();
+    /**
+     * 判断gid是否已经使用过了
+     * @param gid 生成的随机gid
+     * @return true就是没用使用过
+     */
+    private boolean hasNotUsedGid(String username, String gid) {
+        // 检查gid是否已经用过了
+        LambdaQueryWrapper<GroupDO> lambdaQueryWrapper = Wrappers.lambdaQuery(GroupDO.class)
+                .eq(GroupDO::getGid, gid)
+                // TODO 这里username先暂时设置为null，后面写了网关从网关传
+                .eq(GroupDO::getUsername, Optional.ofNullable(username).orElse(UserContext.getUsername()));
+        GroupDO hasGroupFlag = baseMapper.selectOne(lambdaQueryWrapper);
 
-        baseMapper.insert(groupDO);
+        return hasGroupFlag == null;
     }
 
     //
@@ -128,21 +171,5 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
                     .eq(GroupDO::getDelFlag, 0);
             baseMapper.update(groupDO, updateWrapper);
         });
-    }
-
-    /**
-     * 判断gid是否已经使用过了
-     * @param gid 生成的随机gid
-     * @return true就是没用使用过
-     */
-    private boolean hasNotUsedGid(String username, String gid) {
-        // 检查gid是否已经用过了
-        LambdaQueryWrapper<GroupDO> lambdaQueryWrapper = Wrappers.lambdaQuery(GroupDO.class)
-                .eq(GroupDO::getGid, gid)
-                // TODO 这里username先暂时设置为null，后面写了网关从网关传
-                .eq(GroupDO::getUsername, Optional.ofNullable(username).orElse(UserContext.getUsername()));
-        GroupDO hasGroupFlag = baseMapper.selectOne(lambdaQueryWrapper);
-
-        return hasGroupFlag == null;
     }
 }
