@@ -13,7 +13,7 @@ import org.zj.shortlink.admin.common.biz.user.UserTransmitFilter;
  * Configuration 注解表示该类是一个 Spring 的配置类
  * Bean 注解应该是通过工厂方法创建实体类，同时返回值都是 FilterRegistrationBean，所以装配的其实都是 FilterRegistrationBean 类
  * 方法的参数是类的成员变量，如 globalUserFlowRiskControlFilter 的成员变量就有 StringRedisTemplate 和 UserFlowRiskControlConfiguration
- * 同时 Spring 会从容器中寻找 StringRedisTemplate 和 UserFlowRiskControlConfiguration 的 Bean 并将其注入进来
+ * 同时 Spring 会从容器中寻找 StringRedisTemplate 和 UserFlowRiskControlConfiguration 的 Bean 并将其注入进来【【依赖注入】】
  */
 @Configuration
 public class UserConfiguration {
