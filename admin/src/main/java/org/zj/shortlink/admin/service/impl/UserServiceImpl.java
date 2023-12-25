@@ -1,6 +1,7 @@
 package org.zj.shortlink.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -27,6 +28,7 @@ import org.zj.shortlink.admin.service.UserService;
 import org.zj.shortlink.admin.dao.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -128,6 +130,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
     @Override
     public UserLoginRespDTO login(UserLoginReqDTO requestParam) {
+        // 查询用户是否存在
         LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
                 .eq(UserDO::getUsername, requestParam.getUsername())
                 .eq(UserDO::getPassword, requestParam.getPassword())
@@ -139,10 +142,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
             throw new ClientException("用户不存在");
         }
 
-        Boolean hasLogin = stringRedisTemplate.hasKey("login_" + requestParam.getUsername());
-        if (hasLogin != null && hasLogin) {
-            log.warn("用户已登录");
-            throw new ClientException("用户已登录");
+        // 判断用户是否重复登录
+        Map<Object ,Object> hasLoginMap = stringRedisTemplate.opsForHash().entries("login_" + requestParam.getUsername());
+        if (CollUtil.isNotEmpty(hasLoginMap)) {
+            String token = hasLoginMap.keySet().stream()
+                    .findFirst()
+                    .map(Object::toString)
+                    // 如果 Redis 中没有用户登录信息，或者出现了其他问题导致获取失败，则直接抛出异常
+                    .orElseThrow(() -> new ClientException("用户登录错误"));
+            //
+            return new UserLoginRespDTO(token);
         }
 
         // 利用UUID生成一个唯一的用户Token
