@@ -17,6 +17,41 @@ import org.zj.shortlink.admin.common.biz.user.UserTransmitFilter;
  */
 @Configuration
 public class UserConfiguration {
+    /*
+<beans>
+<!-- 用户信息传递过滤器 -->
+<bean id="globalUserTransmitFilter" class="org.springframework.boot.web.servlet.FilterRegistrationBean">
+<property name="filter">
+    <bean class="com.example.UserTransmitFilter">
+        <constructor-arg ref="stringRedisTemplate" />
+    </bean>
+</property>
+<property name="urlPatterns">
+    <list>
+        <value>/*</value>
+    </list>
+</property>
+<property name="order" value="0" />
+</bean>
+
+<!-- 用户操作流量风控过滤器 -->
+<bean id="globalUserFlowRiskControlFilter" class="org.springframework.boot.web.servlet.FilterRegistrationBean"
+depends-on="stringRedisTemplate,userFlowRiskControlConfiguration">
+<property name="filter">
+    <bean class="com.example.UserFlowRiskControlFilter">
+        <constructor-arg ref="stringRedisTemplate" />
+        <constructor-arg ref="userFlowRiskControlConfiguration" />
+    </bean>
+</property>
+<property name="urlPatterns">
+    <list>
+        <value>/*</value>
+    </list>
+</property>
+<property name="order" value="10" />
+</bean>
+</beans>
+     */
 
     /**
      * 用户信息传递过滤器
