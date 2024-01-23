@@ -19,9 +19,11 @@ import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.stream.StreamListener;
 import org.springframework.stereotype.Component;
+import org.zj.shortlink.project.common.convention.exception.ServiceException;
 import org.zj.shortlink.project.dao.entity.*;
 import org.zj.shortlink.project.dao.mapper.*;
 import org.zj.shortlink.project.dto.biz.ShortLinkStatsRecordDTO;
+import org.zj.shortlink.project.mq.idempotent.MessageQueueIdempotentHandler;
 import org.zj.shortlink.project.mq.producer.DelayShortLinkStatsProducer;
 
 import java.util.*;
@@ -51,22 +53,58 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
     private final LinkStatsTodayMapper linkStatsTodayMapper;
     private final DelayShortLinkStatsProducer delayShortLinkStatsProducer;
     private final StringRedisTemplate stringRedisTemplate;
+    private final MessageQueueIdempotentHandler messageQueueIdempotentHandler;
 
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
 
+    /**
+     * 消费 Stream 数据结构中的消息
+     * @param message 消息
+     */
     @Override
     public void onMessage(MapRecord<String, String, String> message) {
+        // 初始：
+//        String stream = message.getStream();
+//        RecordId id = message.getId();
+//        Map<String, String> producerMap = message.getValue();
+//        String fullShortUrl = producerMap.get("fullShortUrl");
+//        if (StrUtil.isNotBlank(fullShortUrl)) {
+//            String gid = producerMap.get("gid");
+//            ShortLinkStatsRecordDTO statsRecord = JSON.parseObject(producerMap.get("statsRecord"), ShortLinkStatsRecordDTO.class);
+//            actualSaveShortLinkStats(fullShortUrl, gid, statsRecord);
+//        }
+//        stringRedisTemplate.opsForStream().delete(Objects.requireNonNull(stream), id.getValue());
+
+        // 应对幂等
         String stream = message.getStream();
         RecordId id = message.getId();
-        Map<String, String> producerMap = message.getValue();
-        String fullShortUrl = producerMap.get("fullShortUrl");
-        if (StrUtil.isNotBlank(fullShortUrl)) {
-            String gid = producerMap.get("gid");
-            ShortLinkStatsRecordDTO statsRecord = JSON.parseObject(producerMap.get("statsRecord"), ShortLinkStatsRecordDTO.class);
-            actualSaveShortLinkStats(fullShortUrl, gid, statsRecord);
+        if (!messageQueueIdempotentHandler.isMessageProcessed(id.toString())) {
+            // 判断当前的这个消息流程是否执行完成
+            if (messageQueueIdempotentHandler.isAccomplish(id.toString())) {
+                // 如果幂等标识还在，则说明消息已经消费过了，为了保证幂等性，则直接返回
+                return;
+            }
+            // 如果未完成则抛出异常，stream 就会重新消费消息
+            throw new ServiceException("消息未完成流程，需要消息队列重试");
         }
-        stringRedisTemplate.opsForStream().delete(Objects.requireNonNull(stream), id.getValue());
+        try {
+            Map<String, String> producerMap = message.getValue();
+            String fullShortUrl = producerMap.get("fullShortUrl");
+            if (StrUtil.isNotBlank(fullShortUrl)) {
+                String gid = producerMap.get("gid");
+                ShortLinkStatsRecordDTO statsRecord = JSON.parseObject(producerMap.get("statsRecord"), ShortLinkStatsRecordDTO.class);
+                actualSaveShortLinkStats(fullShortUrl, gid, statsRecord);
+            }
+            // 执行成功则删除消息，避免重复消费
+            stringRedisTemplate.opsForStream().delete(Objects.requireNonNull(stream), id.getValue());
+        } catch (Throwable ex) {
+            // 某某某情况宕机了
+            messageQueueIdempotentHandler.delMessageProcessed(id.toString());
+            log.error("记录短链接监控消费异常", ex);
+        }
+        // 最后设置幂等标识
+        messageQueueIdempotentHandler.setAccomplish(id.toString());
     }
 
     public void actualSaveShortLinkStats(String fullShortUrl, String gid, ShortLinkStatsRecordDTO statsRecord) {
