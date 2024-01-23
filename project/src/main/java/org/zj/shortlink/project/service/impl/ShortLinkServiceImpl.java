@@ -165,13 +165,14 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             /**
              * 看起来这一段代码好像有点脱裤子放屁，我们本来就是MySQL报唯一索引的异常了，就说明
              */
-            LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
-                            .eq(ShortLinkDO::getFullShortUrl, fullShortUrl);
-            ShortLinkDO hasShortLinkDO = baseMapper.selectOne(queryWrapper);
-            if (hasShortLinkDO != null) {
-                log.warn("短链接：{} 重复入库", fullShortUrl);
-                throw new ServiceException("短链接生成重复");
-            }
+//            LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
+//                            .eq(ShortLinkDO::getFullShortUrl, fullShortUrl);
+//            ShortLinkDO hasShortLinkDO = baseMapper.selectOne(queryWrapper);
+//            if (hasShortLinkDO != null) {
+//                log.warn("短链接：{} 重复入库", fullShortUrl);
+//                throw new ServiceException("短链接生成重复");
+//            }
+            throw new ServiceException(String.format("短链接：%s 生成重复", fullShortUrl));
         }
 
         // 缓存预热
@@ -922,7 +923,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             }
             String originUrl = requestParam.getOriginUrl();
             // 加上当前系统的时间毫秒数，使得即使是同一链接也能尽量生成不同的短链接
-            originUrl += System.currentTimeMillis();
+//            originUrl += System.currentTimeMillis();
+            // 在极端的高并发情况下，使用时间戳可能生成同样的短链接，所以这里优化为随机的UUID
+            originUrl += UUID.randomUUID().toString();
             shortUri = HashUtil.hashToBase62(originUrl);
 
             // 走布隆过滤器
