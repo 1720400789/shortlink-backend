@@ -48,7 +48,8 @@ import org.zj.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import org.zj.shortlink.project.dto.req.ShortLinkPageReqDTO;
 import org.zj.shortlink.project.dto.req.ShortLinkUpdateReqDTO;
 import org.zj.shortlink.project.dto.resp.*;
-import org.zj.shortlink.project.mq.product.DelayShortLinkStatsProducer;
+import org.zj.shortlink.project.mq.producer.DelayShortLinkStatsProducer;
+import org.zj.shortlink.project.mq.producer.ShortLinkStatsSaveProducer;
 import org.zj.shortlink.project.service.LinkStatsTodayService;
 import org.zj.shortlink.project.service.ShortLinkService;
 import org.springframework.stereotype.Service;
@@ -105,6 +106,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final DelayShortLinkStatsProducer delayShortLinkStatsProducer;
 
     private final GotoDomainWhiteListConfiguration gotoDomainWhiteListConfiguration;
+
+    private final ShortLinkStatsSaveProducer shortLinkStatsSaveProducer;
 
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocalAmapKey;
@@ -782,122 +785,127 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
      */
     @Override
     public void shortLinkStats(String fullShortUrl, String gid, ShortLinkStatsRecordDTO statsRecord) {
-        fullShortUrl = Optional.ofNullable(fullShortUrl).orElse(statsRecord.getFullShortUrl());
-        // redission 的读写锁，这里拿到共享【读锁】
-        RReadWriteLock readWriteLock = redissonClient.getReadWriteLock(String.format(LOCK_GID_UPDATE_KEY, fullShortUrl));
-        RLock rLock = readWriteLock.readLock();
-        if (!rLock.tryLock()) {
-            // 获取共享【读锁】失败，在业务即用户不能访问短链接了
-            // 这时将本次需要记录的监控数据作为任务放入延迟队列中，然后直接返回，保证监控数据依然能被执行的同时不阻塞在这里
-            delayShortLinkStatsProducer.send(statsRecord);
-            // 如果不及时处理阻塞，生产环境中大量的请求可能会打掉服务
-            return;
-        }
-        // 获取共享【读锁】成功，下面的业务就是操作数据库将监控数据持久化了
-        // 【【这里不用多线程来提高吞吐，是因为多线程下一旦出错不好回滚】】
-        try {
-            if (StrUtil.isBlank(gid)) {
-                LambdaQueryWrapper<ShortLinkGotoDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
-                        .eq(ShortLinkGotoDO::getFullShortUrl, fullShortUrl);
-                ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(queryWrapper);
-                gid = shortLinkGotoDO.getGid();
-            }
-            int hour = DateUtil.hour(new Date(), true);
-            Week week = DateUtil.dayOfWeekEnum(new Date());
-            int weekValue = week.getIso8601Value();
-            LinkAccessStatsDO linkAccessStatsDO = LinkAccessStatsDO.builder()
-                    .pv(1)
-                    .uv(statsRecord.getUvFirstFlag() ? 1 : 0)
-                    .uip(statsRecord.getUipFirstFlag() ? 1 : 0)
-                    .hour(hour)
-                    .weekday(weekValue)
-                    .fullShortUrl(fullShortUrl)
-                    .gid(gid)
-                    .date(new Date())
-                    .build();
-            linkAccessStatsMapper.shortLinkStats(linkAccessStatsDO);
-            Map<String, Object> localeParamMap = new HashMap<>();
-            localeParamMap.put("key", statsLocaleAmapKey);
-            localeParamMap.put("ip", statsRecord.getRemoteAddr());
-            String localeResultStr = HttpUtil.get(AMAP_REMOTE_URL, localeParamMap);
-            JSONObject localeResultObj = JSON.parseObject(localeResultStr);
-            String infoCode = localeResultObj.getString("infocode");
-            String actualProvince = "未知";
-            String actualCity = "未知";
-            if (StrUtil.isNotBlank(infoCode) && StrUtil.equals(infoCode, "10000")) {
-                String province = localeResultObj.getString("province");
-                boolean unknownFlag = StrUtil.equals(province, "[]");
-                LinkLocaleStatsDO linkLocaleStatsDO = LinkLocaleStatsDO.builder()
-                        .province(actualProvince = unknownFlag ? actualProvince : province)
-                        .city(actualCity = unknownFlag ? actualCity : localeResultObj.getString("city"))
-                        .adcode(unknownFlag ? "未知" : localeResultObj.getString("adcode"))
-                        .cnt(1)
-                        .fullShortUrl(fullShortUrl)
-                        .country("中国")
-                        .gid(gid)
-                        .date(new Date())
-                        .build();
-                linkLocaleStatsMapper.shortLinkLocaleState(linkLocaleStatsDO);
-            }
-            LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()
-                    .os(statsRecord.getOs())
-                    .cnt(1)
-                    .gid(gid)
-                    .fullShortUrl(fullShortUrl)
-                    .date(new Date())
-                    .build();
-            linkOsStatsMapper.shortLinkOsState(linkOsStatsDO);
-            LinkBrowserStatsDO linkBrowserStatsDO = LinkBrowserStatsDO.builder()
-                    .browser(statsRecord.getBrowser())
-                    .cnt(1)
-                    .gid(gid)
-                    .fullShortUrl(fullShortUrl)
-                    .date(new Date())
-                    .build();
-            linkBrowserStatsMapper.shortLinkBrowserState(linkBrowserStatsDO);
-            LinkDeviceStatsDO linkDeviceStatsDO = LinkDeviceStatsDO.builder()
-                    .device(statsRecord.getDevice())
-                    .cnt(1)
-                    .gid(gid)
-                    .fullShortUrl(fullShortUrl)
-                    .date(new Date())
-                    .build();
-            linkDeviceStatsMapper.shortLinkDeviceState(linkDeviceStatsDO);
-            LinkNetworkStatsDO linkNetworkStatsDO = LinkNetworkStatsDO.builder()
-                    .network(statsRecord.getNetwork())
-                    .cnt(1)
-                    .gid(gid)
-                    .fullShortUrl(fullShortUrl)
-                    .date(new Date())
-                    .build();
-            linkNetworkStatsMapper.shortLinkNetworkState(linkNetworkStatsDO);
-            LinkAccessLogsDO linkAccessLogsDO = LinkAccessLogsDO.builder()
-                    .user(statsRecord.getUv())
-                    .ip(statsRecord.getRemoteAddr())
-                    .browser(statsRecord.getBrowser())
-                    .os(statsRecord.getOs())
-                    .network(statsRecord.getNetwork())
-                    .device(statsRecord.getDevice())
-                    .locale(StrUtil.join("-", "中国", actualProvince, actualCity))
-                    .gid(gid)
-                    .fullShortUrl(fullShortUrl)
-                    .build();
-            linkAccessLogsMapper.insert(linkAccessLogsDO);
-            baseMapper.incrementStats(gid, fullShortUrl, 1, statsRecord.getUvFirstFlag() ? 1 : 0, statsRecord.getUipFirstFlag() ? 1 : 0);
-            LinkStatsTodayDO linkStatsTodayDO = LinkStatsTodayDO.builder()
-                    .todayPv(1)
-                    .todayUv(statsRecord.getUvFirstFlag() ? 1 : 0)
-                    .todayUip(statsRecord.getUipFirstFlag() ? 1 : 0)
-                    .gid(gid)
-                    .fullShortUrl(fullShortUrl)
-                    .date(new Date())
-                    .build();
-            linkStatsTodayMapper.shortLinkTodayState(linkStatsTodayDO);
-        } catch (Throwable ex) {
-            log.error("短链接访问量统计异常", ex);
-        } finally {
-            rLock.unlock();
-        }
+        Map<String, String> producerMap = new HashMap<>();
+        producerMap.put("fullShortUrl", fullShortUrl);
+        producerMap.put("gid", gid);
+        producerMap.put("statsRecord", JSON.toJSONString(statsRecord));
+        shortLinkStatsSaveProducer.send(producerMap);
+//        fullShortUrl = Optional.ofNullable(fullShortUrl).orElse(statsRecord.getFullShortUrl());
+//        // redission 的读写锁，这里拿到共享【读锁】
+//        RReadWriteLock readWriteLock = redissonClient.getReadWriteLock(String.format(LOCK_GID_UPDATE_KEY, fullShortUrl));
+//        RLock rLock = readWriteLock.readLock();
+//        if (!rLock.tryLock()) {
+//            // 获取共享【读锁】失败，在业务即用户不能访问短链接了
+//            // 这时将本次需要记录的监控数据作为任务放入延迟队列中，然后直接返回，保证监控数据依然能被执行的同时不阻塞在这里
+//            delayShortLinkStatsProducer.send(statsRecord);
+//            // 如果不及时处理阻塞，生产环境中大量的请求可能会打掉服务
+//            return;
+//        }
+//        // 获取共享【读锁】成功，下面的业务就是操作数据库将监控数据持久化了
+//        // 【【这里不用多线程来提高吞吐，是因为多线程下一旦出错不好回滚】】
+//        try {
+//            if (StrUtil.isBlank(gid)) {
+//                LambdaQueryWrapper<ShortLinkGotoDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
+//                        .eq(ShortLinkGotoDO::getFullShortUrl, fullShortUrl);
+//                ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(queryWrapper);
+//                gid = shortLinkGotoDO.getGid();
+//            }
+//            int hour = DateUtil.hour(new Date(), true);
+//            Week week = DateUtil.dayOfWeekEnum(new Date());
+//            int weekValue = week.getIso8601Value();
+//            LinkAccessStatsDO linkAccessStatsDO = LinkAccessStatsDO.builder()
+//                    .pv(1)
+//                    .uv(statsRecord.getUvFirstFlag() ? 1 : 0)
+//                    .uip(statsRecord.getUipFirstFlag() ? 1 : 0)
+//                    .hour(hour)
+//                    .weekday(weekValue)
+//                    .fullShortUrl(fullShortUrl)
+//                    .gid(gid)
+//                    .date(new Date())
+//                    .build();
+//            linkAccessStatsMapper.shortLinkStats(linkAccessStatsDO);
+//            Map<String, Object> localeParamMap = new HashMap<>();
+//            localeParamMap.put("key", statsLocaleAmapKey);
+//            localeParamMap.put("ip", statsRecord.getRemoteAddr());
+//            String localeResultStr = HttpUtil.get(AMAP_REMOTE_URL, localeParamMap);
+//            JSONObject localeResultObj = JSON.parseObject(localeResultStr);
+//            String infoCode = localeResultObj.getString("infocode");
+//            String actualProvince = "未知";
+//            String actualCity = "未知";
+//            if (StrUtil.isNotBlank(infoCode) && StrUtil.equals(infoCode, "10000")) {
+//                String province = localeResultObj.getString("province");
+//                boolean unknownFlag = StrUtil.equals(province, "[]");
+//                LinkLocaleStatsDO linkLocaleStatsDO = LinkLocaleStatsDO.builder()
+//                        .province(actualProvince = unknownFlag ? actualProvince : province)
+//                        .city(actualCity = unknownFlag ? actualCity : localeResultObj.getString("city"))
+//                        .adcode(unknownFlag ? "未知" : localeResultObj.getString("adcode"))
+//                        .cnt(1)
+//                        .fullShortUrl(fullShortUrl)
+//                        .country("中国")
+//                        .gid(gid)
+//                        .date(new Date())
+//                        .build();
+//                linkLocaleStatsMapper.shortLinkLocaleState(linkLocaleStatsDO);
+//            }
+//            LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()
+//                    .os(statsRecord.getOs())
+//                    .cnt(1)
+//                    .gid(gid)
+//                    .fullShortUrl(fullShortUrl)
+//                    .date(new Date())
+//                    .build();
+//            linkOsStatsMapper.shortLinkOsState(linkOsStatsDO);
+//            LinkBrowserStatsDO linkBrowserStatsDO = LinkBrowserStatsDO.builder()
+//                    .browser(statsRecord.getBrowser())
+//                    .cnt(1)
+//                    .gid(gid)
+//                    .fullShortUrl(fullShortUrl)
+//                    .date(new Date())
+//                    .build();
+//            linkBrowserStatsMapper.shortLinkBrowserState(linkBrowserStatsDO);
+//            LinkDeviceStatsDO linkDeviceStatsDO = LinkDeviceStatsDO.builder()
+//                    .device(statsRecord.getDevice())
+//                    .cnt(1)
+//                    .gid(gid)
+//                    .fullShortUrl(fullShortUrl)
+//                    .date(new Date())
+//                    .build();
+//            linkDeviceStatsMapper.shortLinkDeviceState(linkDeviceStatsDO);
+//            LinkNetworkStatsDO linkNetworkStatsDO = LinkNetworkStatsDO.builder()
+//                    .network(statsRecord.getNetwork())
+//                    .cnt(1)
+//                    .gid(gid)
+//                    .fullShortUrl(fullShortUrl)
+//                    .date(new Date())
+//                    .build();
+//            linkNetworkStatsMapper.shortLinkNetworkState(linkNetworkStatsDO);
+//            LinkAccessLogsDO linkAccessLogsDO = LinkAccessLogsDO.builder()
+//                    .user(statsRecord.getUv())
+//                    .ip(statsRecord.getRemoteAddr())
+//                    .browser(statsRecord.getBrowser())
+//                    .os(statsRecord.getOs())
+//                    .network(statsRecord.getNetwork())
+//                    .device(statsRecord.getDevice())
+//                    .locale(StrUtil.join("-", "中国", actualProvince, actualCity))
+//                    .gid(gid)
+//                    .fullShortUrl(fullShortUrl)
+//                    .build();
+//            linkAccessLogsMapper.insert(linkAccessLogsDO);
+//            baseMapper.incrementStats(gid, fullShortUrl, 1, statsRecord.getUvFirstFlag() ? 1 : 0, statsRecord.getUipFirstFlag() ? 1 : 0);
+//            LinkStatsTodayDO linkStatsTodayDO = LinkStatsTodayDO.builder()
+//                    .todayPv(1)
+//                    .todayUv(statsRecord.getUvFirstFlag() ? 1 : 0)
+//                    .todayUip(statsRecord.getUipFirstFlag() ? 1 : 0)
+//                    .gid(gid)
+//                    .fullShortUrl(fullShortUrl)
+//                    .date(new Date())
+//                    .build();
+//            linkStatsTodayMapper.shortLinkTodayState(linkStatsTodayDO);
+//        } catch (Throwable ex) {
+//            log.error("短链接访问量统计异常", ex);
+//        } finally {
+//            rLock.unlock();
+//        }
     }
 
     /**
