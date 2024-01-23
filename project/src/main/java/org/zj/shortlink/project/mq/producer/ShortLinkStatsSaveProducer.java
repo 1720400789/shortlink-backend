@@ -19,8 +19,8 @@ public class ShortLinkStatsSaveProducer {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    @Value("${spring.data.redis.channel-topic.short-link-stats}")
-    private String topic;
+//    @Value("${spring.data.redis.channel-topic.short-link-stats}")
+//    private String topic;
 
     /**
      * 发送延迟消费短链接统计
