@@ -1,13 +1,13 @@
 package org.zj.shortlink.admin.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
 import org.zj.shortlink.admin.common.convention.result.Result;
 import org.zj.shortlink.admin.common.convention.result.Results;
-import org.zj.shortlink.admin.remote.ShortLinkRemoteService;
+import org.zj.shortlink.admin.remote.ShortLinkActualRemoteService;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkBatchCreateReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkCreateReqDTO;
 import org.zj.shortlink.admin.remote.dto.req.ShortLinkPageReqDTO;
@@ -25,7 +25,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ShortLinkController {
 
-    ShortLinkRemoteService shortLinkRemoteService = new ShortLinkRemoteService() {};
+//    ShortLinkRemoteService shortLinkRemoteService = new ShortLinkRemoteService() {};
+    private final ShortLinkActualRemoteService shortLinkActualRemoteService;
 
     /**
      * 新建短链接
@@ -34,12 +35,12 @@ public class ShortLinkController {
      */
     @PostMapping("/v1/create")
     public Result<ShortLinkCreateRespDTO> createShortLink(@RequestBody ShortLinkCreateReqDTO requestParam) {
-        return shortLinkRemoteService.createShortLink(requestParam);
+        return shortLinkActualRemoteService.createShortLink(requestParam);
     }
 
     @PostMapping("/v1/update")
     public Result<Void> updateShortLink(@RequestBody ShortLinkUpdateReqDTO requestParam) {
-        shortLinkRemoteService.updateShortLink(requestParam);
+        shortLinkActualRemoteService.updateShortLink(requestParam);
         return Results.success();
     }
 
@@ -49,8 +50,8 @@ public class ShortLinkController {
      * @return 分页集合
      */
     @GetMapping("/v1/page")
-    public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(@RequestBody ShortLinkPageReqDTO requestParam) {
-        return shortLinkRemoteService.pageShortLink(requestParam);
+    public Result<Page<ShortLinkPageRespDTO>> pageShortLink(@RequestBody ShortLinkPageReqDTO requestParam) {
+        return shortLinkActualRemoteService.pageShortLink(requestParam.getGid(), requestParam.getOrderTag(), requestParam.getCurrent(), requestParam.getSize());
     }
 
     /**
@@ -59,7 +60,7 @@ public class ShortLinkController {
     @SneakyThrows
     @PostMapping("/api/short-link/admin/v1/create/batch")
     public void batchCreateShortLink(@RequestBody ShortLinkBatchCreateReqDTO requestParam, HttpServletResponse response) {
-        Result<ShortLinkBatchCreateRespDTO> shortLinkBatchCreateRespDTOResult = shortLinkRemoteService.batchCreateShortLink(requestParam);
+        Result<ShortLinkBatchCreateRespDTO> shortLinkBatchCreateRespDTOResult = shortLinkActualRemoteService.batchCreateShortLink(requestParam);
         if (shortLinkBatchCreateRespDTOResult.isSuccess()) {
             List<ShortLinkBaseInfoRespDTO> baseLinkInfos = shortLinkBatchCreateRespDTOResult.getData().getBaseLinkInfos();
             // 将从 Sass 请求到的数据通过 EasyExcel 写入 resp 流中

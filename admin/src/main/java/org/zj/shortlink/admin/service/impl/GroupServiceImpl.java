@@ -18,7 +18,7 @@ import org.zj.shortlink.admin.dao.entity.GroupDO;
 import org.zj.shortlink.admin.dto.req.ShortLinkGroupSortReqDTO;
 import org.zj.shortlink.admin.dto.req.ShortLinkGroupUpdateReqDTO;
 import org.zj.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
-import org.zj.shortlink.admin.remote.ShortLinkRemoteService;
+import org.zj.shortlink.admin.remote.ShortLinkActualRemoteService;
 import org.zj.shortlink.admin.remote.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import org.zj.shortlink.admin.service.GroupService;
 import org.zj.shortlink.admin.dao.mapper.GroupMapper;
@@ -41,7 +41,8 @@ import static org.zj.shortlink.admin.common.constant.RedisCacheConstant.LOCK_GRO
 @RequiredArgsConstructor
 public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implements GroupService {
 
-    ShortLinkRemoteService shortLinkRemoteService = new ShortLinkRemoteService() {};
+//    ShortLinkActualRemoteService shortLinkRemoteService = new ShortLinkActualRemoteService() {};
+    private final ShortLinkActualRemoteService shortLinkActualRemoteService;
 
     private final RedissonClient redissonClient;
 
@@ -118,7 +119,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
         // 利用hutool的httpget调用 project 模块的 count 方法
         // 将ShortLinkGroupRespDTO集合以stream流的形式取出其中的gid并组成List集合
-        Result<List<ShortLinkGroupCountQueryRespDTO>> listResult = shortLinkRemoteService.
+        Result<List<ShortLinkGroupCountQueryRespDTO>> listResult = shortLinkActualRemoteService.
                 listGroupShortLinkCount(groupDOList.stream().map(GroupDO::getGid).toList());
 
         // 将 SQL 执行结果分装到响应结果集
