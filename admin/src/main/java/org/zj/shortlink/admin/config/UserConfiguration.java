@@ -57,13 +57,21 @@ depends-on="stringRedisTemplate,userFlowRiskControlConfiguration">
      * 用户信息传递过滤器
      */
     @Bean
-    public FilterRegistrationBean<UserTransmitFilter> globalUserTransmitFilter(StringRedisTemplate stringRedisTemplate) {
+    public FilterRegistrationBean<UserTransmitFilter> globalUserTransmitFilter() {
         FilterRegistrationBean<UserTransmitFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new UserTransmitFilter(stringRedisTemplate));
+        registration.setFilter(new UserTransmitFilter());
         registration.addUrlPatterns("/*");
         registration.setOrder(0);
         return registration;
     }
+//    @Bean
+//    public FilterRegistrationBean<UserTransmitFilter> globalUserTransmitFilter(StringRedisTemplate stringRedisTemplate) {
+//        FilterRegistrationBean<UserTransmitFilter> registration = new FilterRegistrationBean<>();
+//        registration.setFilter(new UserTransmitFilter(stringRedisTemplate));
+//        registration.addUrlPatterns("/*");
+//        registration.setOrder(0);
+//        return registration;
+//    }
 
     /**
      * 用户操作流量风控过滤器

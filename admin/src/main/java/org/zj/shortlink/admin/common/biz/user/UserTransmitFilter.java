@@ -29,51 +29,15 @@ import static org.zj.shortlink.admin.common.enums.UserErrorCodeEnum.USER_TOKEN_F
  */
 @RequiredArgsConstructor
 public class UserTransmitFilter implements Filter {
-
-    private final StringRedisTemplate stringRedisTemplate;
-
-    /**
-     * 不用过滤的路径
-     */
-    private static final List<String> IGNORE_URI = Lists.newArrayList(
-            "/api/short-link/admin/v1/user/login",
-            "/api/short-link/admin/v1/user/has-username"
-    );
-
-    @SneakyThrows
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        String requestURI = httpServletRequest.getRequestURI();
-        // 如果不用过滤就直接跳过
-        if (!IGNORE_URI.contains(requestURI)) {
-            String method = httpServletRequest.getMethod();
-            // 因为 Restful 风格的书写，我们本来要排除注册接口的，但是这里是有 POST Method 才是注册的，所以这里再过滤一层
-            if (!(Objects.equals(requestURI, "/api/short-link/admin/v1/user") && Objects.equals(method, "POST"))) {
-                // 拿到请求头中的 username 和 token
-                String username = httpServletRequest.getHeader("username");
-                String token = httpServletRequest.getHeader("token");
-                // 如果 Token 不存在就抛出客户端异常给全局异常捕获
-                if (!StrUtil.isAllNotBlank(username, token)) {
-                    returnJson((HttpServletResponse) servletResponse, JSON.toJSONString(Results.failure(new ClientException(USER_TOKEN_FAIL))));
-                    return;
-                }
-                Object userInfoJsonStr = null;
-                try {
-                    // 检查 Token 是否存在
-                    userInfoJsonStr = stringRedisTemplate.opsForHash().get(USER_LOGIN_KEY + username, token);
-                    if (userInfoJsonStr == null) {
-                        returnJson((HttpServletResponse) servletResponse, JSON.toJSONString(Results.failure(new ClientException(USER_TOKEN_FAIL))));
-                        return;
-                    }
-                } catch (Exception ex) {
-                    returnJson((HttpServletResponse) servletResponse, JSON.toJSONString(Results.failure(new ClientException(USER_TOKEN_FAIL))));
-                    return;
-                }
-                // 根据 redis 中 token 存储的 user 信息，将 user 信息设置在 User 上下文中
-                UserInfoDTO userInfoDTO = JSON.parseObject(userInfoJsonStr.toString(), UserInfoDTO.class);
-                UserContext.setUser(userInfoDTO);
-            }
+        String username = httpServletRequest.getHeader("username");
+        if (StrUtil.isNotBlank(username)) {
+            String userId = httpServletRequest.getHeader("userId");
+            String realName = httpServletRequest.getHeader("realName");
+            UserInfoDTO userInfoDTO = new UserInfoDTO(userId, username, realName);
+            UserContext.setUser(userInfoDTO);
         }
         try {
             filterChain.doFilter(servletRequest, servletResponse);
@@ -82,11 +46,64 @@ public class UserTransmitFilter implements Filter {
         }
     }
 
-    private void returnJson(HttpServletResponse response, String json) throws Exception {
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=utf-8");
-        try (PrintWriter writer = response.getWriter()) {
-            writer.print(json);
-        }
-    }
+
+//    private final StringRedisTemplate stringRedisTemplate;
+//
+//    /**
+//     * 不用过滤的路径
+//     */
+//    private static final List<String> IGNORE_URI = Lists.newArrayList(
+//            "/api/short-link/admin/v1/user/login",
+//            "/api/short-link/admin/v1/user/has-username"
+//    );
+
+//    @SneakyThrows
+//    @Override
+//    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+//        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+//        String requestURI = httpServletRequest.getRequestURI();
+//        // 如果不用过滤就直接跳过
+//        if (!IGNORE_URI.contains(requestURI)) {
+//            String method = httpServletRequest.getMethod();
+//            // 因为 Restful 风格的书写，我们本来要排除注册接口的，但是这里是有 POST Method 才是注册的，所以这里再过滤一层
+//            if (!(Objects.equals(requestURI, "/api/short-link/admin/v1/user") && Objects.equals(method, "POST"))) {
+//                // 拿到请求头中的 username 和 token
+//                String username = httpServletRequest.getHeader("username");
+//                String token = httpServletRequest.getHeader("token");
+//                // 如果 Token 不存在就抛出客户端异常给全局异常捕获
+//                if (!StrUtil.isAllNotBlank(username, token)) {
+//                    returnJson((HttpServletResponse) servletResponse, JSON.toJSONString(Results.failure(new ClientException(USER_TOKEN_FAIL))));
+//                    return;
+//                }
+//                Object userInfoJsonStr = null;
+//                try {
+//                    // 检查 Token 是否存在
+//                    userInfoJsonStr = stringRedisTemplate.opsForHash().get(USER_LOGIN_KEY + username, token);
+//                    if (userInfoJsonStr == null) {
+//                        returnJson((HttpServletResponse) servletResponse, JSON.toJSONString(Results.failure(new ClientException(USER_TOKEN_FAIL))));
+//                        return;
+//                    }
+//                } catch (Exception ex) {
+//                    returnJson((HttpServletResponse) servletResponse, JSON.toJSONString(Results.failure(new ClientException(USER_TOKEN_FAIL))));
+//                    return;
+//                }
+//                // 根据 redis 中 token 存储的 user 信息，将 user 信息设置在 User 上下文中
+//                UserInfoDTO userInfoDTO = JSON.parseObject(userInfoJsonStr.toString(), UserInfoDTO.class);
+//                UserContext.setUser(userInfoDTO);
+//            }
+//        }
+//        try {
+//            filterChain.doFilter(servletRequest, servletResponse);
+//        } finally {
+//            UserContext.removeUser();
+//        }
+//    }
+//
+//    private void returnJson(HttpServletResponse response, String json) throws Exception {
+//        response.setCharacterEncoding("UTF-8");
+//        response.setContentType("text/html; charset=utf-8");
+//        try (PrintWriter writer = response.getWriter()) {
+//            writer.print(json);
+//        }
+//    }
 }
