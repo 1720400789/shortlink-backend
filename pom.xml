@@ -15,6 +15,7 @@
         <module>admin</module>
         <module>project</module>
         <module>gateway</module>
+        <module>aggregation</module>
     </modules>
 
 <!--    常用依赖及版本-->

@@ -20,7 +20,7 @@ import org.zj.shortlink.admin.toolkit.EasyExcelWebUtil;
 
 import java.util.List;
 
-@RestController
+@RestController(value = "shortLinkControllerByAdmin")
 @RequestMapping("/api/short-link/admin")
 @RequiredArgsConstructor
 public class ShortLinkController {

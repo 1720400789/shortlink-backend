@@ -19,7 +19,7 @@ import org.zj.shortlink.admin.remote.dto.resp.ShortLinkStatsRespDTO;
  * 短链接监控控制层
  */
 @Slf4j
-@RestController
+@RestController(value = "shortLinkStatsControllerAdmin")
 @RequiredArgsConstructor
 public class ShortLinkStatsController {
 

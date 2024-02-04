@@ -20,7 +20,7 @@ import org.zj.shortlink.admin.service.RecycleBinService;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/short-link/admin")
-@RestController
+@RestController(value = "recycleBinControllerByAdmin")
 public class RecycleBinController {
 
     private final RecycleBinService recycleBinService;

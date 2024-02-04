@@ -1,10 +1,5 @@
 package org.zj.shortlink.admin.remote;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.http.HttpUtil;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.TypeReference;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.bind.annotation.*;
 import org.zj.shortlink.admin.common.convention.result.Result;
@@ -12,14 +7,12 @@ import org.zj.shortlink.admin.remote.dto.req.*;
 import org.zj.shortlink.admin.remote.dto.resp.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 短链接中台远程调用服务
  */
-@FeignClient("short-link-project")
+@FeignClient(value = "short-link-project", url = "${aggregation.remote-url:}")
 public interface ShortLinkActualRemoteService {
 
 
